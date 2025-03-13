@@ -6,8 +6,8 @@ export function getAll(key) {
     return Object.values(data);
 }
 
-export function get(key, email) {
-    const data = loadData(key);
+export function get(email) {
+    const data = loadData(email);
     return data[email] || null;
 }
 
