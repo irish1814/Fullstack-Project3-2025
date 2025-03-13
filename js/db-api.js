@@ -40,3 +40,8 @@ export function remove(key, email) {
     return { success: true };
 }
 
+// Simulated Server
+const database = {
+    users: JSON.parse(localStorage.getItem('users')) || [],
+    contacts: JSON.parse(localStorage.getItem('contacts')) || []
+};

@@ -102,7 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     fetchContacts();
 }); */
-
+import FXMLHttpRequest from '../../js/FAJAX.js';
 
 // Function to show the modal with contact info
 document.addEventListener("DOMContentLoaded", function () {
@@ -184,3 +184,53 @@ function loadContacts() {
         contactsTableBody.appendChild(row);
     });
 }
+
+
+
+
+
+
+// Simple SPA Router
+function navigate(page) {
+    const app = document.getElementById('app');
+    if (page === 'login') {
+        app.innerHTML = `<h2>Login</h2>
+            <input id='email' placeholder='Email'>
+            <input id='password' type='password' placeholder='Password'>
+            <button onclick='login()'>Login</button>
+            <button onclick='navigate("register")'>Register</button>`;
+    } else if (page === 'register') {
+        app.innerHTML = `<h2>Register</h2>
+            <input id='name' placeholder='Name'>
+            <input id='email' placeholder='Email'>
+            <input id='password' type='password' placeholder='Password'>
+            <button onclick='register()'>Register</button>
+            <button onclick='navigate("login")'>Back to Login</button>`;
+    } else if (page === 'contacts') {
+        app.innerHTML = `<h2>Contacts</h2>
+            <button onclick='fetchContacts()'>Load Contacts</button>
+            <ul id='contact-list'></ul>
+            <button onclick='navigate("login")'>Logout</button>`;
+    }
+}
+
+function login() {
+    navigate('contacts');
+}
+
+function register() {
+    navigate('login');
+}
+
+function fetchContacts() {
+    const xhr = new FXMLHttpRequest();
+    xhr.open('GET', '/contacts');
+    xhr.onload = function () {
+        const contacts = JSON.parse(xhr.response);
+        document.getElementById('contact-list').innerHTML = contacts.map(c => `<li>${c.name}</li>`).join('');
+    };
+    xhr.send();
+}
+
+// Initialize App
+navigate('login');
