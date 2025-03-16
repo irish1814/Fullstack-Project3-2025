@@ -32,10 +32,61 @@
                         <th>Phone</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="table-body">
                     <!-- Contacts will be inserted dynamically here -->
                 </tbody>
             </table>
+        </div>
+
+                <!-- Create / Update Contact Modal -->
+        <div id="contactModal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h2 id="modalTitle">Create Contact</h2>
+
+                <div class="contact-fields">
+                    <label for="contactName">Name:</label>
+                    <input type="text" id="contactName">
+
+                    <label for="contactEmail">Email:</label>
+                    <input type="email" id="contactEmail">
+
+                    <label for="contactPhone">Phone:</label>
+                    <input type="tel" id="contactPhone">
+
+                    <label for="contactCountry">Country:</label>
+                    <input type="text" id="contactCountry">
+
+                    <label for="contactCity">City:</label>
+                    <input type="text" id="contactCity">
+
+                    <label for="contactAddress">Address:</label>
+                    <input type="text" id="contactAddress">
+
+                    <label for="contactPhoto">Photo URL:</label>
+                    <input type="text" id="contactPhoto">
+
+                    <button id="saveContactBtn">Save</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Create / Update Group Modal -->
+        <div id="groupModal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h2 id="groupModalTitle">Create Group</h2>
+
+                <div class="contact-fields">
+                    <label for="groupName">Group Name:</label>
+                    <input type="text" id="groupName">
+
+                    <label for="groupMembers">Members (comma separated emails):</label>
+                    <input type="text" id="groupMembers">
+
+                    <button id="saveGroupBtn">Save Group</button>
+                </div>
+            </div>
         </div>
 
         <!-- Template for a contact row in the table -->
@@ -63,8 +114,9 @@
             </div>
         </template>
 
-        <div id="contactModal" class="modal"></div>
+        <div id="contact-modal-content" class="modal"></div>
 
-        <script src="../js/contactsScenario.js"></script>
+        <script src="../js-client/mainPage.js"></script>
+        <script src="../js-client/loadExamplesToLS.js"></script>
     </body>
 </html>

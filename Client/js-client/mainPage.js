@@ -1,112 +1,6 @@
-/* class FXMLHttpRequest {
-    constructor() {
-        this.onload = null;
-        this.onerror = null;
-        this.responseText = "";
-    }
-
-    open(method, url) {
-        this.method = method;
-        this.url = url;
-    }
-
-    send(data = null) {
-        setTimeout(() => {
-            if (Math.random() < 0.2) { // 20% chance to fail
-                if (this.onerror) this.onerror();
-            } else {
-                this.responseText = Network.handleRequest(this.method, this.url, data);
-                if (this.onload) this.onload();
-            }
-        }, Math.random() * 2000 + 1000); // Delay between 1-3 seconds
-    }
-}
-
-class Network {
-    static handleRequest(method, url, data) {
-        return Server.processRequest(method, url, data);
-    }
-}
-
-class Server {
-    static processRequest(method, url, data) {
-        if (url === "/contacts") {
-            return ContactDB.handleRequest(method, data);
-        }
-        return JSON.stringify({ error: "Invalid Endpoint" });
-    }
-}
-
-class ContactDB {
-    static contacts = JSON.parse(localStorage.getItem("contacts")) || [];
-
-    static handleRequest(method, data) {
-        switch (method) {
-            case "GET":
-                return JSON.stringify(ContactDB.contacts);
-            case "POST":
-                const contact = JSON.parse(data);
-                contact.id = Date.now();
-                ContactDB.contacts.push(contact);
-                ContactDB.save();
-                return JSON.stringify({ success: true });
-            case "DELETE":
-                ContactDB.contacts = ContactDB.contacts.filter(c => c.id !== data);
-                ContactDB.save();
-                return JSON.stringify({ success: true });
-            default:
-                return JSON.stringify({ error: "Invalid Method" });
-        }
-    }
-
-    static save() {
-        localStorage.setItem("contacts", JSON.stringify(ContactDB.contacts));
-    }
-}
-
-function fetchContacts() {
-    let xhr = new FXMLHttpRequest();
-    xhr.open("GET", "/contacts");
-    xhr.onload = function () {
-        let contacts = JSON.parse(xhr.responseText);
-        displayContacts(contacts);
-    };
-    xhr.send();
-}
-
-function addContact(name, phone) {
-    let xhr = new FXMLHttpRequest();
-    xhr.open("POST", "/contacts");
-    xhr.onload = function () {
-        fetchContacts();
-    };
-    xhr.send(JSON.stringify({ name, phone }));
-}
-
-function displayContacts(contacts) {
-    let list = document.getElementById("contactList");
-    list.innerHTML = "";
-    contacts.forEach(contact => {
-        let li = document.createElement("li");
-        li.textContent = `${contact.name} - ${contact.phone}`;
-        list.appendChild(li);
-    });
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById("addContactForm").addEventListener("submit", (event) => {
-        event.preventDefault();
-        let name = document.getElementById("name").value;
-        let phone = document.getElementById("phone").value;
-        addContact(name, phone);
-    });
-    fetchContacts();
-}); */
-import FXMLHttpRequest from '../../js/FAJAX.js';
-
 // Function to show the modal with contact info
-document.addEventListener("DOMContentLoaded", function () {
-    const modal = document.getElementById("contactModal");
+document?.addEventListener("DOMContentLoaded", function () {
+    const modal = document.getElementById("contact-modal-content");
     const closeModalButton = document.querySelector(".close-btn");
 
     function showModal(contact) {
@@ -152,19 +46,20 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // Function to load contacts from local storage and add them to the table
-function loadContacts() {
-    const contactsTableBody = document.querySelector("#contacts");
+document?.addEventListener("DOMContentLoaded", function () {
+    const contactsTableBody = document.querySelector("#table-body");
     contactsTableBody.innerHTML = "";
 
-    const contacts = JSON.parse(localStorage.getItem("contacts")) || [];
+    const contacts = JSON.parse(localStorage.getItem("contacts")) || {};
 
-    contacts.forEach(contact => {
+    for(let key of Object.keys(contacts)) {
         const row = document.createElement("tr");
         row.classList.add("contact-row");
 
         // Set data attributes for modal display
+        let contact = contacts[key];
+        row.dataset.email = key;
         row.dataset.name = contact.name;
-        row.dataset.email = contact.email;
         row.dataset.phone = contact.phone;
         row.dataset.country = contact.country;
         row.dataset.city = contact.city;
@@ -182,55 +77,129 @@ function loadContacts() {
         `;
 
         contactsTableBody.appendChild(row);
-    });
-}
-
-
-
-
-
-
-// Simple SPA Router
-function navigate(page) {
-    const app = document.getElementById('app');
-    if (page === 'login') {
-        app.innerHTML = `<h2>Login</h2>
-            <input id='email' placeholder='Email'>
-            <input id='password' type='password' placeholder='Password'>
-            <button onclick='login()'>Login</button>
-            <button onclick='navigate("register")'>Register</button>`;
-    } else if (page === 'register') {
-        app.innerHTML = `<h2>Register</h2>
-            <input id='name' placeholder='Name'>
-            <input id='email' placeholder='Email'>
-            <input id='password' type='password' placeholder='Password'>
-            <button onclick='register()'>Register</button>
-            <button onclick='navigate("login")'>Back to Login</button>`;
-    } else if (page === 'contacts') {
-        app.innerHTML = `<h2>Contacts</h2>
-            <button onclick='fetchContacts()'>Load Contacts</button>
-            <ul id='contact-list'></ul>
-            <button onclick='navigate("login")'>Logout</button>`;
-    }
-}
-
-function login() {
-    navigate('contacts');
-}
-
-function register() {
-    navigate('login');
-}
-
-function fetchContacts() {
-    const xhr = new FXMLHttpRequest();
-    xhr.open('GET', '/contacts');
-    xhr.onload = function () {
-        const contacts = JSON.parse(xhr.response);
-        document.getElementById('contact-list').innerHTML = contacts.map(c => `<li>${c.name}</li>`).join('');
     };
-    xhr.send();
-}
+});
 
-// Initialize App
-navigate('login');
+// Function to allow the user to edit or create new contacts
+document?.addEventListener("DOMContentLoaded", function () {
+    const contactModal = document.getElementById("contactModal");
+    const groupModal = document.getElementById("groupModal");
+
+    const contactCloseBtn = contactModal.querySelector(".close-btn");
+    const groupCloseBtn = groupModal.querySelector(".close-btn");
+
+    const saveContactBtn = document.getElementById("saveContactBtn");
+    const saveGroupBtn = document.getElementById("saveGroupBtn");
+
+    const searchInput = document.getElementById("searchInput");
+
+    // Function to open the contact modal
+    function openContactModal(edit = false, contactData = {}) {
+        document.getElementById("modalTitle").textContent = edit ? "Edit Contact" : "Create Contact";
+
+        document.getElementById("contactName").value = contactData.name || "";
+        document.getElementById("contactEmail").value = contactData.email || "";
+        document.getElementById("contactPhone").value = contactData.phone || "";
+        document.getElementById("contactCountry").value = contactData.country || "";
+        document.getElementById("contactCity").value = contactData.city || "";
+        document.getElementById("contactAddress").value = contactData.address || "";
+        document.getElementById("contactPhoto").value = contactData.photo || "";
+
+        contactModal.style.display = "flex";
+    }
+
+    // Function to open the group modal
+    function openGroupModal(edit = false, groupData = {}) {
+        document.getElementById("groupModalTitle").textContent = edit ? "Edit Group" : "Create Group";
+
+        document.getElementById("groupName").value = groupData.name || "";
+        document.getElementById("groupMembers").value = groupData.members ? groupData.members.join(", ") : "";
+
+        groupModal.style.display = "flex";
+    }
+
+    // Function to close modals
+    function closeModal(modal) {
+        modal.style.display = "none";
+    }
+
+    contactCloseBtn?.addEventListener("click", () => closeModal(contactModal));
+    groupCloseBtn?.addEventListener("click", () => closeModal(groupModal));
+
+    // Close modals if clicking outside
+    window?.addEventListener("click", (event) => {
+        if (event.target === contactModal) closeModal(contactModal);
+        if (event.target === groupModal) closeModal(groupModal);
+    });
+
+    // Save contact to LocalStorage
+    saveContactBtn?.addEventListener("click", function () {
+        const contacts = JSON.parse(localStorage.getItem("contacts")) || {};
+
+        const contactEmail = document.getElementById("contactEmail").value;
+        const contactName = document.getElementById("contactName").value;
+        const contactPhone = document.getElementById("contactPhone").value;
+        const contactCountry = document.getElementById("contactCountry").value;
+        const contactCity = document.getElementById("contactCity").value;
+        const contactAddress = document.getElementById("contactAddress").value;
+        const contactPhoto = document.getElementById("contactPhoto").value;
+
+        if (contactEmail) {
+            contacts[contactEmail] = {
+                name: contactName,
+                phone: contactPhone,
+                country: contactCountry,
+                city: contactCity,
+                address: contactAddress,
+                photo: contactPhoto
+            };
+
+            localStorage.setItem("contacts", JSON.stringify(contacts));
+            loadContacts();
+            closeModal(contactModal);
+        }
+    });
+
+    // Save group to LocalStorage
+    saveGroupBtn?.addEventListener("click", function () {
+        const groups = JSON.parse(localStorage.getItem("groups")) || {};
+
+        const groupName = document.getElementById("groupName").value;
+        const groupMembers = document.getElementById("groupMembers").value.split(",").map(email => email.trim());
+
+        if (groupName) {
+            groups[groupName] = { members: groupMembers };
+            localStorage.setItem("groups", JSON.stringify(groups));
+            closeModal(groupModal);
+        }
+    });
+
+    // Search function
+    searchInput?.addEventListener("input", function () {
+        const searchValue = searchInput.value.toLowerCase();
+        const contactRows = document.querySelectorAll(".contact-row");
+
+        contactRows.forEach(row => {
+            const name = row.dataset.name.toLowerCase();
+            const email = row.dataset.email.toLowerCase();
+            const phone = row.dataset.phone.toLowerCase();
+
+            if (name.includes(searchValue) || email.includes(searchValue) || phone.includes(searchValue)) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    });
+
+    // Attach event listeners to menu buttons
+    document?.querySelector(".menu-content li:nth-child(1) a").addEventListener("click", () => openContactModal(false));
+    document?.querySelector(".menu-content li:nth-child(2) a").addEventListener("click", () => openGroupModal(false));
+});
+
+
+function loadContacts() {
+    // Save to localStorage
+    localStorage.setItem("contacts", JSON.stringify(exampleContacts));
+    console.log("Example contacts saved to localStorage!");
+}
