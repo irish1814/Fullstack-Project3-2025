@@ -153,6 +153,19 @@ a {
     opacity: 0; /* Hide the icon when the input is visible */
 }
 
+.delete-btn {
+    margin-left: 10px;
+    background-color: red;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    font-weight: bold;
+}
+
+.delete-btn:hover {
+    background-color: darkred;
+}
 
 .content {
     margin-left: 100px;

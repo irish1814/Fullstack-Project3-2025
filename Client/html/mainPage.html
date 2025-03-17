@@ -15,11 +15,9 @@
             </div>    
 
             <ul class="menu-content">
-                <li><a href="#"><span class="material-symbols-outlined">person_add</span><span>Create Contact</span></a></li>
-                <li><a href="#"><span class="material-symbols-outlined">group_add</span><span>Create Group</span></a></li>
-                <li><a href="#"><span class="material-symbols-outlined">edit</span><span>Edit Contact</span></a></li>
-                <li><a href="#"><span class="material-symbols-outlined">delete</span><span>Delete Contact</span></a></li>
-                <li><a href="#"><span class="material-symbols-outlined">group</span><span>View Contacts</span></a></li>
+                <li><button id="createBtn"><span class="material-symbols-outlined">person_add</span><span>Create Contact</span></button></li>
+                <li><button id="editBtn"><span class="material-symbols-outlined">edit</span><span>Edit Contact</span></button></li>
+                <li><button id="deleteBtn"><span class="material-symbols-outlined">delete</span><span>Delete Contact</span></button></li>
             </ul>
         </nav>
 
@@ -38,7 +36,7 @@
             </table>
         </div>
 
-                <!-- Create / Update Contact Modal -->
+        <!-- Create / Update Contact Modal -->
         <div id="contactModal" class="modal">
             <div class="modal-content">
                 <span class="close-btn">&times;</span>
@@ -71,30 +69,13 @@
             </div>
         </div>
 
-        <!-- Create / Update Group Modal -->
-        <div id="groupModal" class="modal">
-            <div class="modal-content">
-                <span class="close-btn">&times;</span>
-                <h2 id="groupModalTitle">Create Group</h2>
-
-                <div class="contact-fields">
-                    <label for="groupName">Group Name:</label>
-                    <input type="text" id="groupName">
-
-                    <label for="groupMembers">Members (comma separated emails):</label>
-                    <input type="text" id="groupMembers">
-
-                    <button id="saveGroupBtn">Save Group</button>
-                </div>
-            </div>
-        </div>
-
         <!-- Template for a contact row in the table -->
         <template id="contact-row-template">
             <tr class="contact-row">
                 <td class="contact-name"></td>
                 <td class="contact-email"></td>
                 <td class="contact-phone"></td>
+                <td><button class="delete-btn">❌</button></td>
             </tr>
         </template>
 

@@ -1,5 +1,5 @@
 // Function to show the modal with contact info
-document?.addEventListener("DOMContentLoaded", function () {
+document?.addEventListener("DOMContentLoaded", () => {
     const modal = document.getElementById("contact-modal-content");
     const closeModalButton = document.querySelector(".close-btn");
 
@@ -46,160 +46,176 @@ document?.addEventListener("DOMContentLoaded", function () {
 });
 
 // Function to load contacts from local storage and add them to the table
-document?.addEventListener("DOMContentLoaded", function () {
+document?.addEventListener("DOMContentLoaded", () => {
+    const modal = document.getElementById("contactModal");
+    const modalTitle = document.getElementById("modalTitle");
+    const createButton = document.getElementById("createBtn");
+    const editButton = document.getElementById("editBtn");
+    const deleteButton = document.getElementById("deleteBtn");
+    const closeBtn = document.querySelector(".close-btn");
+    const saveBtn = document.getElementById("saveContactBtn");
+    
     const contactsTableBody = document.querySelector("#table-body");
-    contactsTableBody.innerHTML = "";
-
-    const contacts = JSON.parse(localStorage.getItem("contacts")) || {};
-
-    for(let key of Object.keys(contacts)) {
-        const row = document.createElement("tr");
-        row.classList.add("contact-row");
-
-        // Set data attributes for modal display
-        let contact = contacts[key];
-        row.dataset.email = key;
-        row.dataset.name = contact.name;
-        row.dataset.phone = contact.phone;
-        row.dataset.country = contact.country;
-        row.dataset.city = contact.city;
-        row.dataset.address = contact.address;
-        row.dataset.photo = contact.photo || ""; // Empty if no photo
-
-        // Add onclick event to open modal
-        row.setAttribute("onclick", "showModal(this)");
-
-        // Insert table cells
-        row.innerHTML = `
-            <td>${contact.name}</td>
-            <td>${contact.email}</td>
-            <td>${contact.phone}</td>
-        `;
-
-        contactsTableBody.appendChild(row);
+    const contactInputFields = {
+        name: document.getElementById("contactName"),
+        email: document.getElementById("contactEmail"),
+        phone: document.getElementById("contactPhone"),
+        country: document.getElementById("contactCountry"),
+        city: document.getElementById("contactCity"),
+        address: document.getElementById("contactAddress"),
+        photo: document.getElementById("contactPhoto"),
     };
-});
 
-// Function to allow the user to edit or create new contacts
-document?.addEventListener("DOMContentLoaded", function () {
-    const contactModal = document.getElementById("contactModal");
-    const groupModal = document.getElementById("groupModal");
+    // Index to create/edit contact in the table
+    let editingContactIndex = null;
 
-    const contactCloseBtn = contactModal.querySelector(".close-btn");
-    const groupCloseBtn = groupModal.querySelector(".close-btn");
+    // Flag to indicate delete mode
+    let deleteMode = false; 
 
-    const saveContactBtn = document.getElementById("saveContactBtn");
-    const saveGroupBtn = document.getElementById("saveGroupBtn");
-
-    const searchInput = document.getElementById("searchInput");
-
-    // Function to open the contact modal
-    function openContactModal(edit = false, contactData = {}) {
-        document.getElementById("modalTitle").textContent = edit ? "Edit Contact" : "Create Contact";
-
-        document.getElementById("contactName").value = contactData.name || "";
-        document.getElementById("contactEmail").value = contactData.email || "";
-        document.getElementById("contactPhone").value = contactData.phone || "";
-        document.getElementById("contactCountry").value = contactData.country || "";
-        document.getElementById("contactCity").value = contactData.city || "";
-        document.getElementById("contactAddress").value = contactData.address || "";
-        document.getElementById("contactPhoto").value = contactData.photo || "";
-
-        contactModal.style.display = "flex";
-    }
-
-    // Function to open the group modal
-    function openGroupModal(edit = false, groupData = {}) {
-        document.getElementById("groupModalTitle").textContent = edit ? "Edit Group" : "Create Group";
-
-        document.getElementById("groupName").value = groupData.name || "";
-        document.getElementById("groupMembers").value = groupData.members ? groupData.members.join(", ") : "";
-
-        groupModal.style.display = "flex";
-    }
-
-    // Function to close modals
-    function closeModal(modal) {
-        modal.style.display = "none";
-    }
-
-    contactCloseBtn?.addEventListener("click", () => closeModal(contactModal));
-    groupCloseBtn?.addEventListener("click", () => closeModal(groupModal));
-
-    // Close modals if clicking outside
-    window?.addEventListener("click", (event) => {
-        if (event.target === contactModal) closeModal(contactModal);
-        if (event.target === groupModal) closeModal(groupModal);
-    });
-
-    // Save contact to LocalStorage
-    saveContactBtn?.addEventListener("click", function () {
+    // Loads contacts from Local Storgae to show them in the table
+    function loadContacts() {
+        contactsTableBody.innerHTML = "";
         const contacts = JSON.parse(localStorage.getItem("contacts")) || {};
 
-        const contactEmail = document.getElementById("contactEmail").value;
-        const contactName = document.getElementById("contactName").value;
-        const contactPhone = document.getElementById("contactPhone").value;
-        const contactCountry = document.getElementById("contactCountry").value;
-        const contactCity = document.getElementById("contactCity").value;
-        const contactAddress = document.getElementById("contactAddress").value;
-        const contactPhoto = document.getElementById("contactPhoto").value;
+        let index = 0;
+        for(let key of Object.keys(contacts)) {
+            const row = document.createElement("tr");
+            row.classList.add("contact-row");
 
-        if (contactEmail) {
-            contacts[contactEmail] = {
-                name: contactName,
-                phone: contactPhone,
-                country: contactCountry,
-                city: contactCity,
-                address: contactAddress,
-                photo: contactPhoto
-            };
+            // Set data attributes for modal display
+            let contact = contacts[key];
+            row.dataset.email = key;
+            row.dataset.name = contact.name;
+            row.dataset.phone = contact.phone;
+            row.dataset.country = contact.country;
+            row.dataset.city = contact.city;
+            row.dataset.address = contact.address;
+            row.dataset.photo = contact.photo || ""; // Empty if no photo
 
-            localStorage.setItem("contacts", JSON.stringify(contacts));
-            loadContacts();
-            closeModal(contactModal);
+            // Add onclick event to open modal
+            row.setAttribute("onclick", "showModal(this)");
+
+            // Insert table cells
+            row.innerHTML = `
+                <td>${contact.name}</td>
+                <td>${contact.email}</td>
+                <td>${contact.phone}</td>
+                ${deleteMode ? `<td><button id="delete-btn" data-index="${index}">❌</button></td>` : ""}
+            `;
+
+            contactsTableBody.appendChild(row);
+            index++;
+        };
+
+        if (deleteMode) {
+            document.querySelectorAll("delete-btn").forEach(button => {
+                button.addEventListener("click", (event) => {
+                    const index = event.target.getAttribute("data-index");
+                    deleteContact(index);
+                });
+            });
         }
-    });
+    }
 
-    // Save group to LocalStorage
-    saveGroupBtn?.addEventListener("click", function () {
-        const groups = JSON.parse(localStorage.getItem("groups")) || {};
+    function saveContact() {
+        const contacts = JSON.parse(localStorage.getItem("contacts")) || [];
+        email = contactInputFields.email.value.trim()
+        const newContact = {
+            name: contactInputFields.name.value.trim(),
+            email: email,
+            phone: contactInputFields.phone.value.trim(),
+            country: contactInputFields.country.value.trim(),
+            city: contactInputFields.city.value.trim(),
+            address: contactInputFields.address.value.trim(),
+            photo: contactInputFields.photo.value.trim(),
+        };
 
-        const groupName = document.getElementById("groupName").value;
-        const groupMembers = document.getElementById("groupMembers").value.split(",").map(email => email.trim());
+        contacts[email] = newContact;
 
-        if (groupName) {
-            groups[groupName] = { members: groupMembers };
-            localStorage.setItem("groups", JSON.stringify(groups));
-            closeModal(groupModal);
-        }
-    });
+        localStorage.setItem("contacts", JSON.stringify(contacts));
+        modal.style.display = "none";
+        loadContacts();
+    }
 
-    // Search function
-    searchInput?.addEventListener("input", function () {
-        const searchValue = searchInput.value.toLowerCase();
-        const contactRows = document.querySelectorAll(".contact-row");
+    function deleteContact(index) {
+        const contacts = JSON.parse(localStorage.getItem("contacts")) || [];
+        contacts.splice(index, 1);
+        localStorage.setItem("contacts", JSON.stringify(contacts));
+        loadContacts();
+    }
 
-        contactRows.forEach(row => {
-            const name = row.dataset.name.toLowerCase();
-            const email = row.dataset.email.toLowerCase();
-            const phone = row.dataset.phone.toLowerCase();
+    // Open a pop-op window for creating or editing a contact
+    function openModal(isEditing = false, contactIndex = null) {
+        modal.style.display = "flex";
+        modalTitle.textContent = isEditing ? "Edit Contact" : "Create Contact";
+        saveBtn.textContent = isEditing ? "Update" : "Save";
 
-            if (name.includes(searchValue) || email.includes(searchValue) || phone.includes(searchValue)) {
-                row.style.display = "";
-            } else {
-                row.style.display = "none";
+        if (isEditing) {
+            const contacts = JSON.parse(localStorage.getItem("contacts")) || [];
+            const contact = contacts[contactIndex];
+            if (contact) {
+                contactInputFields.name.value = contact.name.value || "";
+                contactInputFields.email.value = contact.email.value || "";
+                contactInputFields.phone.value = contact.phone || "";
+                contactInputFields.country.value = contact.country || "";
+                contactInputFields.city.value = contact.city || "";
+                contactInputFields.address.value = contact.address || "";
+                contactInputFields.photo.value = contact.photo || "";
+                editingContactIndex = contactIndex;
             }
-        });
+        } else {
+            Object.values(contactInputFields).forEach(input => (input.value = ""));
+            editingContactIndex = null;
+        }
+    }
+
+    // Events Listeners to open a pop-op window for editing or creating a new contact
+    // document.querySelector(".menu-content li:nth-child(1) a").addEventListener("click", () => {
+    //     deleteMode = false;
+    //     openModal(false);
+    // });
+
+    // document.querySelector(".menu-content li:nth-child(2) a").addEventListener("click", () => {
+    //     const contacts = JSON.parse(localStorage.getItem("contacts")) || [];
+    //     if (contacts.length > 0) {
+    //         deleteMode = false;
+    //         openModal(true, 0); // Edit the first contact by default
+    //     } else {
+    //         alert("No contacts available to edit.");
+    //     }
+    // });
+
+    // document.querySelector(".menu-content li:nth-child(3) a").addEventListener("click", () => {
+    //     deleteMode = true;
+    //     loadContacts();
+    // });
+
+    // Event Listeners for Buttons
+    createButton?.addEventListener("click", () => {
+        deleteMode = false;
+        openModal(false);
     });
 
-    // Attach event listeners to menu buttons
-    document?.querySelector(".menu-content li:nth-child(1) a").addEventListener("click", () => openContactModal(false));
-    document?.querySelector(".menu-content li:nth-child(2) a").addEventListener("click", () => openGroupModal(false));
+    editButton?.addEventListener("click", () => {
+        const contacts = JSON.parse(localStorage.getItem("contacts")) || {};
+        if (Object.keys(contacts).length > 0) {
+            deleteMode = false;
+            openModal(true, 0);
+        } else {
+            alert("No contacts available to edit.");
+        }
+    });
+
+    deleteButton?.addEventListener("click", () => {
+        deleteMode = true;
+        loadContacts();
+    });
+
+
+    // Save a new contact or save new editing
+    saveBtn.addEventListener("click", saveContact);
+    // Cancal the operation
+    closeBtn.addEventListener("click", () => (modal.style.display = "none"));
+
+    loadContacts();
 });
-
-
-function loadContacts() {
-    // Save to localStorage
-    localStorage.setItem("contacts", JSON.stringify(exampleContacts));
-    console.log("Example contacts saved to localStorage!");
-}
