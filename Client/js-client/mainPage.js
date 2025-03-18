@@ -92,8 +92,6 @@ document?.addEventListener("DOMContentLoaded", () => {
             row.dataset.address = contact.address;
             row.dataset.photo = contact.photo || ""; // Empty if no photo
 
-            // Add onclick event to open modal
-            row.setAttribute("onclick", "showModal(this)");
 
             // Insert table cells
             row.innerHTML = `
@@ -102,18 +100,18 @@ document?.addEventListener("DOMContentLoaded", () => {
                 <td>${contact.phone}</td>
                 ${deleteMode ? `<td><button id="delete-btn" data-index="${index}">❌</button></td>` : ""}
             `;
-
+            
             contactsTableBody.appendChild(row);
             index++;
-        };
 
-        if (deleteMode) {
-            document.querySelectorAll("delete-btn").forEach(button => {
-                button.addEventListener("click", (event) => {
-                    const index = event.target.getAttribute("data-index");
-                    deleteContact(index);
+            if (deleteMode) {
+                document.querySelectorAll("delete-btn").forEach(button => {
+                    button.addEventListener("click", (event) => {
+                        const index = event.target.getAttribute("data-index");
+                        deleteContact(index);
+                    });
                 });
-            });
+            }
         }
     }
 
@@ -169,27 +167,6 @@ document?.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Events Listeners to open a pop-op window for editing or creating a new contact
-    // document.querySelector(".menu-content li:nth-child(1) a").addEventListener("click", () => {
-    //     deleteMode = false;
-    //     openModal(false);
-    // });
-
-    // document.querySelector(".menu-content li:nth-child(2) a").addEventListener("click", () => {
-    //     const contacts = JSON.parse(localStorage.getItem("contacts")) || [];
-    //     if (contacts.length > 0) {
-    //         deleteMode = false;
-    //         openModal(true, 0); // Edit the first contact by default
-    //     } else {
-    //         alert("No contacts available to edit.");
-    //     }
-    // });
-
-    // document.querySelector(".menu-content li:nth-child(3) a").addEventListener("click", () => {
-    //     deleteMode = true;
-    //     loadContacts();
-    // });
-
     // Event Listeners for Buttons
     createButton?.addEventListener("click", () => {
         deleteMode = false;
@@ -211,9 +188,9 @@ document?.addEventListener("DOMContentLoaded", () => {
         loadContacts();
     });
 
-
     // Save a new contact or save new editing
     saveBtn.addEventListener("click", saveContact);
+    
     // Cancal the operation
     closeBtn.addEventListener("click", () => (modal.style.display = "none"));
 
