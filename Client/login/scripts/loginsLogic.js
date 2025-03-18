@@ -58,15 +58,13 @@ document.addEventListener('DOMContentLoaded', () => {
         showNotification('You have been logged out.', 'info');
     }
 
-    
     const signInForm = document.getElementById('login-form')
     const signUpForm = document.getElementById('registration-form')
     const resetForm = document.getElementById('reset-form')
 
     // Handle User Registration
-    signUpForm?.addEventListener('submit', () => {
-        // e.preventDefault();
-
+    signUpForm?.addEventListener('submit', function (e) {
+        e.preventDefault();
         const firstname = document.getElementById('firstname').value.trim();
         const lastname = document.getElementById('lastname').value.trim();
         const email = document.getElementById('email').value.trim();
@@ -76,29 +74,28 @@ document.addEventListener('DOMContentLoaded', () => {
         // Validate that passwords match
         if (password !== confirmPassword) {
             showNotification('Passwords do not match!', 'error');
-            return;
-        }
-
-        // Save user data to localStorage
-        const users = JSON.parse(localStorage.getItem('users')) || {};
-        const existingUser = users['email'] || {};
-
-        if (existingUser) {
-            showNotification('Email is already registered!', 'error');
         }
 
         else {
-            let newUser = { email: email, password: password, name: firstname + ' ' + lastname };
-            localStorage.setItem('users', JSON.stringify(newUser));
+            // Save user data to localStorage
+            const users = JSON.parse(localStorage.getItem('users')) || {};
 
-            showNotification('Registration successful! You can now log in.', 'success');
-            // Redirect to the login page
-            setTimeout(() => {
-                window.location.assign(logInPage);
-            }, 3000);
+            if (users[email]) {
+                showNotification('Email is already registered!', 'error');
+            }
+
+            else {
+                users[email] = { password: password, name: firstname + ' ' + lastname };
+                localStorage.setItem('users', JSON.stringify(users));
+
+                showNotification('Registration successful! You can now log in.', 'success');
+                // Redirect to the login page
+                setTimeout(() => {
+                    window.location.assign(logInPage);
+                }, 3000);
+            }
         }
     });
-
 
     // Handle User Login
     signInForm?.addEventListener('submit', function (e) {
@@ -109,12 +106,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Retrieve users from localStorage
         const users = JSON.parse(localStorage.getItem('users')) || {};
-        const userEmail = users['email'] || {}, userPassword = users['password'] || {};
+        const userPassword = users[email].password || '';
 
-        if (userEmail === email && password === userPassword) {
+
+        if (password === userPassword) {
             setCookie('isLoggedIn', true, 1); // Set a general login cookie
             setCookie('userEmail', email, 1); // Store user's email in a cookie
-            showNotification(`Welcome back ${users['email'].name}`, 'success');
+            showNotification(`Welcome back ${users[email].name}`, 'success');
             setTimeout(() => {
                 window.location.assign(mainPage);
             }, 3000);
