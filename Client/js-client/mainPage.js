@@ -1,3 +1,5 @@
+import { setCookie, getCookie, deleteCookie } from '../login/scripts/loginsLogic'
+
 // Function to show the modal with contact info
 document?.addEventListener("DOMContentLoaded", () => {
     const modal = document.getElementById("contact-modal-content");
@@ -190,7 +192,7 @@ document?.addEventListener("DOMContentLoaded", () => {
 
     // Save a new contact or save new editing
     saveBtn.addEventListener("click", saveContact);
-    
+
     // Cancal the operation
     closeBtn.addEventListener("click", () => (modal.style.display = "none"));
 

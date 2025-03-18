@@ -1,3 +1,12 @@
+function getCookie(name) {
+    const cookies = document.cookie.split('; ');
+    for (let cookie of cookies) {
+        const [key, value] = cookie.split('=');
+        if (key === name) return value;
+    }
+    return null;
+}
+
 const exampleContacts = {
     "johndoe@example.com": {
         name: "John Doe",
@@ -29,5 +38,6 @@ const exampleContacts = {
 };
 
 // Save to localStorage
-localStorage.setItem("contacts", JSON.stringify(exampleContacts));
+const userEmail = getCookie('userEmail');
+localStorage.setItem(userEmail, JSON.stringify(exampleContacts));
 console.log("Example contacts saved to localStorage!");
