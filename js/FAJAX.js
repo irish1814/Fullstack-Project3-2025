@@ -18,6 +18,9 @@ class FXMLHttpRequest {
     }
 
     send(data = null) {
+        if (this.readyState !== 1) {
+            throw new Error("Invalid state");
+        }
         this.readyState = 2;
         stateChange();
 

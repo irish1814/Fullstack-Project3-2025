@@ -1,17 +1,49 @@
+import * as DB from "../js/db-api";
+
 export function handleContactsRequest(method, endpoint, data) {
     const urlParts = endpoint.split("/");
-    if (urlParts[1] !== "contacts") return { error: "Invalid API route" };
+    const userEmail = urlParts[2];
 
     switch (method) {
         case "GET":
-            return urlParts.length === 2 ? contactsDB.getAll() : contactsDB.get(decodeURIComponent(urlParts[2]));
+            if (urlParts.length === 4 ) {
+                if (urlParts[3] === "all") {
+                    const contacts = DB.getContact(userEmail);
+                    return { status: 200, data: contacts };
+                }
+                else if (urlParts[3] === "search") {
+                    const contacts = DB.searchContacts(userEmail, data.search);
+                    return { status: 200, data: contacts };
+                }
+            }
+            
+            return { status: 404, data: { message: "UserEmail not found" } };
+            
+
+
         case "POST":
-            return contactsDB.add(data.email, data);
+            const newContact = DB.addContact(userEmail, data);
+            if (!newContact) {
+                return { status: 409, data: { message: "Contact already exists" } }; 
+            }
+
+            return { status: 201, data: newContact };
+
         case "PUT":
-            return contactsDB.update(decodeURIComponent(urlParts[2]), data);
+            const updateContact= DB.updateContact(userEmail, urlParts[3], data);
+            if (!updateContact) {
+                return { status: 404, data: { message: "Contact not found" } };
+            }
+            return { status: 200, data: updateContact };
+
         case "DELETE":
-            return contactsDB.delete(decodeURIComponent(urlParts[2]));
+           const deleted = DB.deleteContact(userEmail, urlParts[3]);
+           if (!deleted) {
+               return { status: 404, data: { message: "Contact not found" } };
+           }
+           return { status: 204, data: {message: 'Contact Deleted'} };
+
         default:
-            return { error: "Unsupported method" };
+            return { status: 400, data:{ message: "Ivalid method for contacts request" }};
     }
 }

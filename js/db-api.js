@@ -1,47 +1,77 @@
 const loadData = (key) => JSON.parse(localStorage.getItem(key)) || {};
 const saveData = (key, data) => localStorage.setItem(key, JSON.stringify(data));
 
-export function getAll(key) {
-    const data = loadData(key);
-    return Object.values(data);
+
+
+
+
+//for UserServer 
+export function findUser(email) {
+    const users = loadData("users");
+    return users[email] ? users[email] : null;
 }
 
-export function get(email) {
-    const data = loadData(email);
+export function addUserData(data) {
+    const users = loadData("users");
+
+    if (findUser(data.email)) return null;
+
+    users[data.email] = data;
+    saveData("users", users);
+    return data;
+}
+
+
+//for ContactServer
+export function getContact(email) {
+    const data = loadData("contacts");
     return data[email] || null;
 }
 
-export function add(key, email, entry) {
-    if (!email) return { error: "Email is required" };
+export function addContact(userEmail, data) {
 
-    const data = loadData(key);
-    if (data[email]) return { error: "Entry already exists" };
+    if (!userEmail) return null;
 
-    data[email] = entry;
-    saveData(key, data);
-    return entry;
+    const contactData = loadData("contacts");
+    if (!contactData[userEmail]) {
+        contactData[userEmail] = [];
+    }
+    contactData[userEmail].push(data);
+    saveData("contacts", contactData);
+    return data;    
 }
 
-export function update(key, email, newData) {
-    const data = loadData(key);
-    if (!data[email]) return { error: "Entry not found" };
+export function updateContact(userEmail, contactEmail, newData) {
+    const contactData = loadData("contacts");
+    if (!contactData[userEmail]) return null;
 
-    data[email] = { ...data[email], ...newData };
-    saveData(key, data);
-    return data[email];
+    const index = contactData[userEmail].findIndex(contact => contact.email === contactEmail);
+    if (index === -1) return null;
+
+    contactData[userEmail][index] = { ...newData };//deep copy
+    saveData("contacts", contactData);
+    return contactData[userEmail][index];
 }
 
-export function remove(key, email) {
-    const data = loadData(key);
-    if (!data[email]) return { error: "Entry not found" };
+export function deleteContact(userEmail, contactEmail) {
+    const contactData = loadData("contacts");
+    if (!contactData[userEmail]) return false;
 
-    delete data[email];
-    saveData(key, data);
-    return { success: true };
+    const index = contactData[userEmail].findIndex(contact => contact.email === contactEmail);
+    if (index === -1) return false;
+
+    contactData[userEmail].splice(index, 1);//remove the contact
+    saveData("contacts", contactData);
+    return true;
 }
 
-// Simulated Server
-const database = {
-    users: JSON.parse(localStorage.getItem('users')) || [],
-    contacts: JSON.parse(localStorage.getItem('contacts')) || []
-};
+export function searchContacts(userEmail, search) {
+    const searchRegex = new RegExp(search, "i");
+    const contactData = getContact(userEmail).filter(
+        (c) => 
+            searchRegex.test(c.name) || 
+            searchRegex.test(c.email) || 
+            searchRegex.test(c.phone)
+    )
+    return contactData;
+}

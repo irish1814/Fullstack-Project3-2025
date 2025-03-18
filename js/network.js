@@ -45,13 +45,3 @@ function handleServerRequest(method, url, data, callback) {
 
     callback(response)
 }
-
-if (method === 'GET') {
-    return database.contacts;
-} else if (method === 'POST') {
-    const newContact = JSON.parse(data);
-    newContact.id = Date.now();
-    database.contacts.push(newContact);
-    localStorage.setItem('contacts', JSON.stringify(database.contacts));
-    return { success: true };
-}
