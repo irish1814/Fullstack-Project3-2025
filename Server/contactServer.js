@@ -1,4 +1,4 @@
-import DataBase from "../JS/db.js";
+import DataBase from "../js/database.js";
 
 export function handleContactsRequest(method, endpoint, data) {
     const urlParts = endpoint.split("/");

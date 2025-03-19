@@ -14,7 +14,7 @@ class FXMLHttpRequest {
         this.method = method;
         this.url = url;
         this.readyState = 1;
-        stateChange();
+        this.stateChange();
     }
 
     send(data = null) {
@@ -22,7 +22,7 @@ class FXMLHttpRequest {
             throw new Error("Invalid state");
         }
         this.readyState = 2;
-        stateChange();
+        this.stateChange();
 
         sendMessage(this, data);
     }

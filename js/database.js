@@ -13,8 +13,8 @@ const DataBase = {
      * @returns User data at users[email] if it exists
      */
     findUser(email) {
-        const users = loadData("users");
-        return users[email] ? users[email] : null;
+        const users = this.loadData("users");
+        return users?.[email] ?? null;
     },
 
     /**
@@ -23,54 +23,54 @@ const DataBase = {
      * @returns null if user already exist, otherwise the user's creds
      */
     addUserData(data) {
-        const users = loadData("users");
+        const users = this.loadData("users");
 
-        if (findUser(data.email)) return null;
+        if (this.findUser(data.email)) return null;
 
         users[data.email] = data;
-        saveData("users", users);
+        this.saveData("users", users);
         return data;
     },
 
     //for ContactServer
     getContact(email) {
-        const data = loadData("contacts");
+        const data = this.loadData("contacts");
         return data[email] || null;
     },
 
     addContact(userEmail, data) {
         if (!userEmail) return null;
 
-        const contactData = loadData("contacts");
+        const contactData = this.loadData("contacts");
         if (!contactData[userEmail]) {
             contactData[userEmail] = [];
         }
         contactData[userEmail].push(data);
-        saveData("contacts", contactData);
+        this.saveData("contacts", contactData);
         return data;    
     }, 
 
     updateContact(userEmail, contactEmail, newData) {
-        const contactData = loadData("contacts");
+        const contactData = this.loadData("contacts");
         if (!contactData[userEmail]) return null;
 
         const index = contactData[userEmail].findIndex(contact => contact.email === contactEmail);
         if (index === -1) return null;
 
         contactData[userEmail][index] = { ...newData };//deep copy
-        saveData("contacts", contactData);
+        this.saveData("contacts", contactData);
         return contactData[userEmail][index];
     },
 
     deleteContact(userEmail, contactEmail) {
-        const contactData = loadData("contacts");
+        const contactData = this.loadData("contacts");
         if (!contactData[userEmail]) return false;
 
         const index = contactData[userEmail].findIndex(contact => contact.email === contactEmail);
         if (index === -1) return false;
 
         contactData[userEmail].splice(index, 1);//remove the contact
-        saveData("contacts", contactData);
+        this.saveData("contacts", contactData);
         return true;
     },
 

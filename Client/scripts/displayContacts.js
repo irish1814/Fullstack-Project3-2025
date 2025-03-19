@@ -200,7 +200,7 @@
 
 // If the user already signed in and the cookie is valid for 5 minutes
 document.addEventListener('DOMContentLoaded', () => {
-    showTemplate("login-form");
+    showTemplate("registration-form");
 });
 
 // Show the relevant template based on user action

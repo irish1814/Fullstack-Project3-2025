@@ -66,7 +66,8 @@ function signInForm() {
             }
             handleNetworkRequest("GET", `${loginServer}/users`, { username, password }, LoginCallback, "retry login")
         };
-    } else {
+    }
+    else {
         showNotification('PLease enter email and passsword!', 'error');
     }
 }
@@ -82,7 +83,6 @@ function signUpForm() {
     if (password !== confirmPassword) {
         showNotification('Passwords do not match!', 'error');
     } else {
-        console.log("creating a request")
         // Save user data to localStorage
         const fajax = new FXMLHttpRequest();
         fajax.open('POST', '/users');
@@ -90,12 +90,16 @@ function signUpForm() {
             if (fajax.readyState === 4 && fajax.status === 201) {
                 showNotification('Registration successful! You can now log in.', 'success');
                 // Redirect to the login page
-                setTimeout(() => { showTemplate("login-form") }, 3000);
+                setTimeout(() => {
+                    showTemplate("showContacts")
+                }, 3000);
             } else if (fajax.readyState === 4) {
                 showNotification('Email is already registered!', 'error');
             }
         }
-        fajax.send({ email, password, name: firstname + ' ' + lastname });
+        let data = { email: email, password: password, name: firstname + ' ' + lastname }
+        console.log("Sending request with data: " + JSON.stringify(data));
+        fajax.send(data);
     }
 }
 
@@ -152,3 +156,4 @@ window.signUpForm = signUpForm;
 window.resetAccount = resetAccount;
 window.signInForm = signInForm;
 window.logout = logout;
+window.showNotification = showNotification;

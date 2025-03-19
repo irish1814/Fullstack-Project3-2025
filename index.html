@@ -26,11 +26,11 @@
         </nav>
 
         <!-- Content area -->
-        <div id="content"></div>
+        <div id="content" class="container"></div>
 
         <div class="contact-list">
             <template id="showContacts">
-                <table id="contactsList">
+                <table id="listContacts">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -42,6 +42,67 @@
                         <!-- Contacts will be inserted dynamically here -->
                     </tbody>
                 </table>
+            </template>
+            
+            <!-- Template for creating a new contact -->
+            <template id="createContact">
+                <div id="create" class="createContact">
+                    <h2>Add Contact</h2>
+                    <input type="text" id="contactName" placeholder="Enter contact name"/>
+                    <input type="text" id="contactPhone" placeholder="Enter contact phone"/>
+                    <input type="email" id="contactEmail" placeholder="Enter contact email"/>
+                    <div class="actions">
+                        <button onclick="addContact()">Add</button>
+                        <button onclick="showTemplate('listContacts')">Abort</button>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Template for reading the contact list -->
+            <template id="read-template">
+                <div id="read" class="template-section">
+                <h1>Contact List</h1>
+                <header>
+                    <div class="search-bar">
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Search contact by name"
+                    />
+                    <button onclick="searchContact()">Search</button>
+                    </div>
+                    <div class="header-actions">
+                    <button
+                        class="add-contact-button"
+                        onclick="showTemplate('create')"
+                    ></button>
+                    </div>
+                </header>
+                <div class="contact-headers">
+                    <span class="header-tel">Tel</span>
+                    <span class="header-name">Name</span>
+                    <span class="header-email">Email</span>
+                </div>
+                <div id="contactList"></div>
+                </div>
+            </template>
+
+            <!-- Template for editing a contact -->
+            <template id="editContact">
+                <div id="edit" class="editContact">
+                    <h2>Edit Contact</h2>
+                    <input type="text" id="editContactName" placeholder="Enter new name"/>
+                    <input type="text" id="editContactPhone" placeholder="Enter new phone"/>
+                    <input type="email" id="editContactEmail" placeholder="Enter new email"/>
+                    <div class="actions">
+                        <button class="actions-butten" onclick="saveEditContact()">
+                            Save
+                        </button>
+                        <button class="actions-butten" onclick="showTemplate('listContacts')">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
             </template>
         </div>
 
@@ -104,7 +165,7 @@
             </div>
         </template>
 
-        <div class="form">
+        <div class="hidden">
             <!-- Template for user signup -->
             <template id="registration-form">
                 <p class="title">Register</p>
@@ -157,7 +218,7 @@
                 <button class="submit" id="submit" onclick="signInForm()">Log in</button>
                 <p class="signin">Forgot your password? <button class="submit" onclick="showTemplate('reset-form')">Click here</button></p>
                 <p class="signin">Don't have an account? <button class="submit" onclick="showTemplate('registration-form')">Sign up</button></p>
-                <div id="notification" class="notification"></div>
+                
             </template>
             
             <!-- Template for reset account's password -->
@@ -182,6 +243,7 @@
                 <p class="signin">Remember your password? <button class="submit" onclick="showTemplate('login-form')">Login</button></p>
                 <div id="notification" class="notification"></div>
             </template>
+            <div id="notification" class="notification"></div>
         </div>
 
         <div id="contact-modal-content" class="modal"></div>

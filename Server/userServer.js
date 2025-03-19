@@ -1,3 +1,4 @@
+import DataBase from "../js/database.js";
 
 export function handleUsersRequest(method, endpoint, data) {
     switch (method) {
