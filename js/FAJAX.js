@@ -34,7 +34,4 @@ class FXMLHttpRequest {
     }
 }
 
-
-
-
 export default FXMLHttpRequest; 

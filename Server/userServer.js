@@ -1,9 +1,8 @@
-import * as DB from "../js/db-api";
 
 export function handleUsersRequest(method, endpoint, data) {
     switch (method) {
         case "GET":
-            const user = DB.findUser(data.email);
+            const user = DataBase.findUser(data.email);
             if (user) {
                 if (user.password !== data.password) {
                     return { status: 401, data: { message: "Invalid password" } };
@@ -11,7 +10,7 @@ export function handleUsersRequest(method, endpoint, data) {
                 return { status: 200, data: user };
             }
         case "POST":
-            const newUser = DB.addUserData(data);
+            const newUser = DataBase.addUserData(data);
             if (!newUser) {
                 return { status: 409, data: { message: "User already exists" } };
             }

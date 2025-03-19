@@ -4,8 +4,6 @@ import { handleUsersRequest } from '../Server/userServer.js';
 let packetLossRate = 0 //0.2; // Default: 20% packet loss
 
 export function sendMessage(request, data) {
-    
-
     const delayClient = Math.floor(Math.random() * 2000) + 1000;
     setTimeout(() => {
         if (Math.random() < packetLossRate) {

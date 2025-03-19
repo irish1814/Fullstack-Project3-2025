@@ -1,4 +1,4 @@
-import * as DB from "../js/db-api";
+import DataBase from "../JS/db.js";
 
 export function handleContactsRequest(method, endpoint, data) {
     const urlParts = endpoint.split("/");
@@ -8,11 +8,11 @@ export function handleContactsRequest(method, endpoint, data) {
         case "GET":
             if (urlParts.length === 4 ) {
                 if (urlParts[3] === "all") {
-                    const contacts = DB.getContact(userEmail);
+                    const contacts = DataBase.getContact(userEmail);
                     return { status: 200, data: contacts };
                 }
                 else if (urlParts[3] === "search") {
-                    const contacts = DB.searchContacts(userEmail, data.search);
+                    const contacts = DataBase.searchContacts(userEmail, data.search);
                     return { status: 200, data: contacts };
                 }
             }
@@ -22,7 +22,7 @@ export function handleContactsRequest(method, endpoint, data) {
 
 
         case "POST":
-            const newContact = DB.addContact(userEmail, data);
+            const newContact = DataBase.addContact(userEmail, data);
             if (!newContact) {
                 return { status: 409, data: { message: "Contact already exists" } }; 
             }
@@ -30,18 +30,18 @@ export function handleContactsRequest(method, endpoint, data) {
             return { status: 201, data: newContact };
 
         case "PUT":
-            const updateContact= DB.updateContact(userEmail, urlParts[3], data);
+            const updateContact= DataBase.updateContact(userEmail, urlParts[3], data);
             if (!updateContact) {
                 return { status: 404, data: { message: "Contact not found" } };
             }
             return { status: 200, data: updateContact };
 
         case "DELETE":
-           const deleted = DB.deleteContact(userEmail, urlParts[3]);
-           if (!deleted) {
-               return { status: 404, data: { message: "Contact not found" } };
-           }
-           return { status: 204, data: {message: 'Contact Deleted'} };
+            const deleted = DataBase.deleteContact(userEmail, urlParts[3]);
+            if (!deleted) {
+                return { status: 404, data: { message: "Contact not found" } };
+            }
+            return { status: 204, data: {message: 'Contact Deleted'} };
 
         default:
             return { status: 400, data:{ message: "Ivalid method for contacts request" }};

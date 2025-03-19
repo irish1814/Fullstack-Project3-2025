@@ -276,7 +276,10 @@ button.edit-btn {
     margin-right: 10px;
 }
 
-/* Modal Styles */
+.hidden {
+    display: none;
+}
+
 .modal {
     display: none;
     position: fixed;

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Contacts List</title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+        <link rel="stylesheet" href="./Client/css/loginsTemplates.css">
+        <link rel="stylesheet" href="./Client/css/mainPage.css">
+        <script src="./Client/scripts/displayContacts.js" type="module"></script>
+        <script src="./Client/scripts/loginsLogic.js" type="module"></script>
+    </head>
+    <body>
+        <nav class="hidden" id="nav-bar">
+            <div class="search-bar">
+                <span class="material-symbols-outlined search-icon">search</span>
+                <input type="text" id="searchInput" placeholder="Search contacts...">
+            </div>    
+
+            <ul class="menu-content">
+                <li><button id="createBtn"><span class="material-symbols-outlined">person_add</span><span>Create Contact</span></button></li>
+                <li><button id="editBtn"><span class="material-symbols-outlined">edit</span><span>Edit Contact</span></button></li>
+                <li><button id="deleteBtn"><span class="material-symbols-outlined">delete</span><span>Delete Contact</span></button></li>
+                <li><button id="logoutBtn" onclick="logout()"><span class="material-symbols-outlined">logout</span><span>Log Out</span></button></li>
+            </ul>
+        </nav>
+
+        <!-- Content area -->
+        <div id="content"></div>
+
+        <div class="contact-list">
+            <template id="showContacts">
+                <table id="contactsList">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <!-- Contacts will be inserted dynamically here -->
+                    </tbody>
+                </table>
+            </template>
+        </div>
+
+        <!-- Create / Update Contact Modal -->
+        <div id="contactModal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h2 id="modalTitle">Create Contact</h2>
+
+                <div class="contact-fields">
+                    <label for="contactName">Name:</label>
+                    <input type="text" id="contactName">
+
+                    <label for="contactEmail">Email:</label>
+                    <input type="email" id="contactEmail">
+
+                    <label for="contactPhone">Phone:</label>
+                    <input type="tel" id="contactPhone">
+
+                    <label for="contactCountry">Country:</label>
+                    <input type="text" id="contactCountry">
+
+                    <label for="contactCity">City:</label>
+                    <input type="text" id="contactCity">
+
+                    <label for="contactAddress">Address:</label>
+                    <input type="text" id="contactAddress">
+
+                    <label for="contactPhoto">Photo URL:</label>
+                    <input type="text" id="contactPhoto">
+
+                    <button id="saveContactBtn">Save</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Template for a contact row in the table -->
+        <template id="contact-row-template">
+            <tr class="contact-row">
+                <td class="contact-name"></td>
+                <td class="contact-email"></td>
+                <td class="contact-phone"></td>
+                <td><button class="delete-btn">❌</button></td>
+            </tr>
+        </template>
+
+        <!-- Pop-op Contact Window Template -->
+        <template id="contact-modal-template">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h2 id="modalName"></h2>
+                <img id="modalPhoto" src="" alt="Contact Photo" class="modal-photo">
+                <div id="modalDetails">
+                    <p><strong>Email:</strong> <span id="modalEmail"></span></p>
+                    <p><strong>Phone:</strong> <span id="modalPhone"></span></p>
+                    <p><strong>Country:</strong> <span id="modalCountry"></span></p>
+                    <p><strong>City:</strong> <span id="modalCity"></span></p>
+                    <p><strong>Address:</strong> <span id="modalAddress"></span></p>
+                </div>
+            </div>
+        </template>
+
+        <div class="form">
+            <!-- Template for user signup -->
+            <template id="registration-form">
+                <p class="title">Register</p>
+                <p class="message">Signup now and create your own contacts list</p>
+                <div class="flex">
+                    <label>
+                        <input class="input" type="text" id="firstname" placeholder="" required>
+                        <span>Firstname</span>
+                    </label>
+
+                    <label>
+                        <input class="input" type="text" id="lastname" placeholder="" required>
+                        <span>Lastname</span>
+                    </label>
+                        
+                    <label>
+                        <input class="input" type="email" id="email" placeholder="" required>
+                        <span>Email</span>
+                    </label> 
+                        
+                    <label>
+                        <input class="input" type="password" id="password" placeholder="" required>
+                        <span>Password</span>
+                    </label>
+                    <label>
+                        <input class="input" type="password" id="confirm-password" placeholder="" minlength="8" required>
+                        <span>Confirm password</span>
+                    </label>
+                    <button class="submit" type="submit" onclick="signUpForm()">Submit</button>
+                <p class="signin">Already have an account? <button class="submit" onclick="showTemplate('login-form')">Signin</button></p>
+            </template>
+
+            <!-- Template for user login -->
+            <template id="login-form">
+                <p class="title">Log in</p>
+                <p class="message">Welcome back! Please enter your credentials.</p>
+
+                <div class="flex">
+                    <label>
+                        <input class="input" id="email" type="email" placeholder="" required="">
+                        <span>Email</span>
+                    </label>
+
+                    <label>
+                        <input class="input" id="password" type="password" placeholder="" required="">
+                        <span>Password</span>
+                    </label>
+                </div>
+
+                <button class="submit" id="submit" onclick="signInForm()">Log in</button>
+                <p class="signin">Forgot your password? <button class="submit" onclick="showTemplate('reset-form')">Click here</button></p>
+                <p class="signin">Don't have an account? <button class="submit" onclick="showTemplate('registration-form')">Sign up</button></p>
+                <div id="notification" class="notification"></div>
+            </template>
+            
+            <!-- Template for reset account's password -->
+            <template id="reset-form">
+                <p class="title">Reset Password</p>
+                <p class="message">Enter your email to reset your password.</p>
+                <div class="flex">
+                    <label>
+                        <input class="input" id="email" type="email" placeholder="Enter your email" required="">
+                        <span>Email</span>
+                    </label>
+                    <label>
+                        <input class="input" type="password" id="password" placeholder="Enter New Password" required>
+                        <span>New Password</span>
+                    </label>
+                    <label>
+                        <input class="input" type="password" id="confirm-password" placeholder="Confirm New Password" minlength="8" required>
+                        <span>Confirm New Password</span>
+                    </label>
+                </div>
+                <button class="submit" type="submit" onclick="resetAccount()">Reset Password</button>
+                <p class="signin">Remember your password? <button class="submit" onclick="showTemplate('login-form')">Login</button></p>
+                <div id="notification" class="notification"></div>
+            </template>
+        </div>
+
+        <div id="contact-modal-content" class="modal"></div>
+    </body>
+</html>
