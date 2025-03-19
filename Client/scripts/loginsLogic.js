@@ -1,7 +1,7 @@
 import FXMLHttpRequest from "../../js/FAJAX.js";
 
 var loginServer = 'http://localhost:5500'
-var userID = null
+var sessionID = null
 
 // Set a cookie
 function setCookie(name, value, minutes) {
@@ -39,6 +39,8 @@ function showNotification(message, type) {
 }
 
 function logout() {
+    // Terminate session id
+    sessionID = null;
     showTemplate("login-form");
 }
 
@@ -51,8 +53,8 @@ function signInForm() {
         const LoginCallback = (xhr) => {
             if (xhr.readyState === 4 && xhr.status === 200) {
                 console.log(xhr.responseText);
-                userID = JSON.parse(xhr.responseText)[0];
-                console.log("Created session with user ID: " + userID);
+                sessionID = JSON.parse(xhr.responseText)[0];
+                console.log("Created session with user ID: " + sessionID);
                 setCookie('userEmail', email, 5); // Store user's email in a cookie
                 setTimeout(() => {
                     showNotification(`Welcome back ${xhr.data.firstname +  
@@ -64,8 +66,7 @@ function signInForm() {
             }
             handleNetworkRequest("GET", `${loginServer}/users`, { username, password }, LoginCallback, "retry login")
         };
-    }
-    else {
+    } else {
         showNotification('PLease enter email and passsword!', 'error');
     }
 }
@@ -150,3 +151,4 @@ function loadContactsList(loggedInUserData) {
 window.signUpForm = signUpForm;
 window.resetAccount = resetAccount;
 window.signInForm = signInForm;
+window.logout = logout;
