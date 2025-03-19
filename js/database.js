@@ -1,6 +1,6 @@
 const DataBase = { 
     loadData(key) { 
-        JSON.parse(localStorage.getItem(key)) || {}; 
+        return JSON.parse(localStorage.getItem(key)) || {}; 
     },
 
     saveData(key, data) {
