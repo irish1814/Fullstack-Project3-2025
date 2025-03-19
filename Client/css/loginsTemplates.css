@@ -8,15 +8,17 @@ body {
     font-family: Arial, sans-serif;
 }
 
+/* Container */
 .container {
-    position: relative;
-    width: 400px; /* Adjust width as needed */
-    padding: 20px;
-    background: white;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    text-align: center;
+    background: none; /* Remove background */
+    border: none; /* Remove border */
+    padding: 0; /* Remove padding */
+    margin: 50px; /* Add margin */
+    max-width: 80%; /* Full width */
+    width: 80%;
+    box-shadow: none; /* Remove box-shadow */
 }
+
 
 .form {
     display: flex;

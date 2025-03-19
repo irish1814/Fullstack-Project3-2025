@@ -7,6 +7,7 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
         <link rel="stylesheet" href="./Client/css/loginsTemplates.css">
         <link rel="stylesheet" href="./Client/css/mainPage.css">
+        <link rel="stylesheet" href="./Client/css/pop-opWindow.css">
         <script src="./Client/scripts/displayContacts.js" type="module"></script>
         <script src="./Client/scripts/loginsLogic.js" type="module"></script>
     </head>
@@ -19,16 +20,18 @@
 
             <ul class="menu-content">
                 <li><button id="createBtn" onclick="showTemplate('createContact')"><span class="material-symbols-outlined">person_add</span><span>Create Contact</span></button></li>
-                <li><button id="editBtn" onclick="showTemplate('editContact')"><span class="material-symbols-outlined">edit</span><span>Edit Contact</span></button></li>
-                <li><button id="deleteBtn"><span class="material-symbols-outlined">delete</span><span>Delete Contact</span></button></li>
+                <!-- <li><button id="editBtn" onclick="showTemplate('editContact')"><span class="material-symbols-outlined">edit</span><span>Edit Contact</span></button></li>
+                <li><button id="deleteBtn"><span class="material-symbols-outlined">delete</span><span>Delete Contact</span></button></li> -->
                 <li><button id="logoutBtn" onclick="logout()"><span class="material-symbols-outlined">logout</span><span>Log Out</span></button></li>
             </ul>
         </nav>
+            <div class="container">
+                <!-- Main content area -->
+                <div id="content"></div>
 
-        <!-- Content area -->
-        <div id="content" class="container"></div>
+            <!-- Content area -->
+            <div id="content"></div>
 
-        <div class="contact-list">
             <template id="listContacts">
                 <table id="listContacts">
                     <thead>
@@ -51,13 +54,13 @@
                     <input type="text" id="contactName" placeholder="Enter contact name"/>
                     <input type="text" id="contactPhone" placeholder="Enter contact phone"/>
                     <input type="email" id="contactEmail" placeholder="Enter contact email"/>
-                    <div class="actions">
+                    <div class="button-container">
                         <button onclick="addContact()">Add</button>
                         <button onclick="showTemplate('listContacts')">Abort</button>
                     </div>
                 </div>
             </template>
-            
+
             <!-- Template for editing a contact -->
             <template id="editContact">
                 <div id="edit" class="editContact">
@@ -65,19 +68,17 @@
                     <input type="text" id="editContactName" placeholder="Enter new name"/>
                     <input type="text" id="editContactPhone" placeholder="Enter new phone"/>
                     <input type="email" id="editContactEmail" placeholder="Enter new email"/>
-                    <div class="actions">
-                        <button class="actions-butten" onclick="editContact()">
+                    <div class="button-container">
+                        <button class="button-container" onclick="editContact()">
                             Save
                         </button>
-                        <button class="actions-butten" onclick="showTemplate('listContacts')">
+                        <button class="button-container" onclick="showTemplate('listContacts')">
                             Cancel
                         </button>
                     </div>
                 </div>
             </template>
-        </div>
 
-        <div class="hidden">
             <!-- Template for user signup -->
             <template id="registration-form">
                 <p class="title">Register</p>
@@ -156,8 +157,8 @@
                 <p class="signin">Remember your password? <button class="submit" onclick="showTemplate('login-form')">Login</button></p>
                 <div id="notification" class="notification"></div>
             </template>
-        </div>
 
-        <div id="contact-modal-content" class="modal"></div>
+            <div id="contact-modal-content" class="modal"></div>
+        </div>
     </body>
 </html>

@@ -1,5 +1,5 @@
 export var contacts = [];
-export var editIndex = null;
+// export var editIndex = null;
 export var contactId = null;
 
 // // Function to show the modal with contact info
@@ -214,10 +214,10 @@ function showTemplate(templateType) {
     const template = document.getElementById(templateType).content;
     const clone = document.importNode(template, true);
     content.appendChild(clone);
-
+    
     // Hide nav bar when in signin or signup mode and set the class to be "form" which is the dedicated class for all sign forms
     if (templateType === "login-form" || templateType === "registration-form" || templateType === "reset-form") {
-        document.getElementById("nav-bar").class = "hidden";
+        document.getElementById("nav-bar").className = "hidden";
         content.className = "form";
     } else {
         document.getElementById("nav-bar").className = "menu";
@@ -225,6 +225,7 @@ function showTemplate(templateType) {
 
     // Call renderList if the read template is shown
     if (templateType === "listContacts") {
+        content.className = "table";
         renderList();
     }
 }
@@ -253,7 +254,13 @@ function renderList() {
         const deleteButton = document.createElement("button");
 
         editButton.textContent = "Edit";
+        editButton.addEventListener("click", () => {
+            showTemplate("editContact");
+            editContact(index);
+        });
+
         deleteButton.textContent = "Delete";
+        deleteButton.addEventListener("click", () => deleteContact(index));
         editButton.setAttribute("data-index", index);
         deleteButton.setAttribute("data-index", index);
 
