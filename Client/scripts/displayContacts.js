@@ -1,3 +1,7 @@
+export var contacts = [];
+export var editIndex = null;
+export var contactId = null;
+
 // // Function to show the modal with contact info
 // document?.addEventListener("DOMContentLoaded", () => {
 //     const modal = document.getElementById("contact-modal-content");
@@ -216,13 +220,65 @@ function showTemplate(templateType) {
         document.getElementById("nav-bar").class = "hidden";
         content.className = "form";
     } else {
-        document.getElementById("nav-bar").class = "menu";
+        document.getElementById("nav-bar").className = "menu";
     }
 
     // Call renderList if the read template is shown
-    if (templateType === "read") {
+    if (templateType === "listContacts") {
         renderList();
     }
 }
 
+function renderList() {
+    const tableBody = document.getElementById("table-body");
+
+    tableBody.innerHTML = "";
+    
+    // Loop over the contacts array and insert rows into the table body.
+    contacts.forEach((contact, index) => {
+        const row = document.createElement("tr");
+
+        // Create table cells for Name, Email, and Phone
+        const nameCell = document.createElement("td");
+        const emailCell = document.createElement("td");
+        const phoneCell = document.createElement("td");
+
+        // Fill the cells with contact information
+        nameCell.textContent = contact.name;
+        emailCell.textContent = contact.email;
+        phoneCell.textContent = contact.phone;
+
+        const actionCell = document.createElement("td");
+        const editButton = document.createElement("button");
+        const deleteButton = document.createElement("button");
+
+        editButton.textContent = "Edit";
+        deleteButton.textContent = "Delete";
+        editButton.setAttribute("data-index", index);
+        deleteButton.setAttribute("data-index", index);
+
+        actionCell.appendChild(editButton);
+        actionCell.appendChild(deleteButton);
+
+        row.appendChild(nameCell);
+        row.appendChild(emailCell);
+        row.appendChild(phoneCell);
+        row.appendChild(actionCell);
+
+        tableBody.appendChild(row);
+    });
+
+    // If there are no contacts, display a message
+    if (contacts.length === 0) {
+        const emptyRow = document.createElement("tr");
+        const emptyCell = document.createElement("td");
+        emptyCell.colSpan = 4; // Set colspan to span across all columns
+        emptyCell.textContent = "No contacts found";
+        emptyRow.appendChild(emptyCell);
+        tableBody.appendChild(emptyRow);
+    }
+}
+
+
 window.showTemplate = showTemplate;
+window.renderList = renderList;

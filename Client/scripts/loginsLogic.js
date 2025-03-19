@@ -1,7 +1,9 @@
 import FXMLHttpRequest from "../../js/FAJAX.js";
+import { contacts, editIndex, contactId } from "./displayContacts.js";
 
 var loginServer = 'http://localhost:5500'
-var sessionID = null
+var UserEmail = null
+
 
 // Set a cookie
 function setCookie(name, value, minutes) {
@@ -40,38 +42,50 @@ function showNotification(message, type) {
 
 function logout() {
     // Terminate session id
-    sessionID = null;
+    UserEmail = null;
     showTemplate("login-form");
 }
 
+/**
+ * Log in an existing user.
+ * URL: GET http://localhost:3000/users
+ * Data: { username, password }
+ */
 function signInForm() {
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
-    console.log(email + password);
 
     if(email && password) {
-        const LoginCallback = (xhr) => {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                console.log(xhr.responseText);
-                sessionID = JSON.parse(xhr.responseText)[0];
-                console.log("Created session with user ID: " + sessionID);
-                setCookie('userEmail', email, 5); // Store user's email in a cookie
+        const fajax = new FXMLHttpRequest();
+        fajax.open('GET', '/users');
+        fajax.onload = () => {
+            if (fajax.readyState === 4 && fajax.status === 200) {
+                let response = JSON.parse(fajax.responseText);
+                console.log(response);
+                let username = response.name;
+                UserEmail = response.email;
+                showNotification(`Welcome Back ${username}`, 'success');
+                // Redirect to the login page
                 setTimeout(() => {
-                    showNotification(`Welcome back ${xhr.data.firstname +  
-                        ' ' + xhr.data.lastname}`, 'success');
+                    showTemplate("listContacts");
+                    loadContactsList();
                 }, 3000);
-                loadContactsList(xhr.data);
-            } else {
-                showNotification("Wrong Email or Password", "error");
+            } else if (fajax.readyState === 4) {
+                console.log(fajax)
+                showNotification('Wrong Email or Password', 'error');
             }
-            handleNetworkRequest("GET", `${loginServer}/users`, { username, password }, LoginCallback, "retry login")
-        };
-    }
-    else {
-        showNotification('PLease enter email and passsword!', 'error');
+        }
+        let data = { email: email, password: password }
+        console.log("Sending request with data: " + JSON.stringify(data));
+        fajax.send(data);
     }
 }
 
+/**
+ * Sign up as a new user.
+ * URL: POST http://localhost:3000/users/signup
+ * Data: { username: email, password: password, name: first + last name }
+ */
 function signUpForm() {
     const firstname = document.getElementById('firstname').value.trim();
     const lastname = document.getElementById('lastname').value.trim();
@@ -85,15 +99,16 @@ function signUpForm() {
     } else {
         // Save user data to localStorage
         const fajax = new FXMLHttpRequest();
-        fajax.open('POST', '/users');
+        fajax.open('POST', '/users/signup');
         fajax.onload = () => {
             if (fajax.readyState === 4 && fajax.status === 201) {
                 showNotification('Registration successful! You can now log in.', 'success');
                 // Redirect to the login page
                 setTimeout(() => {
-                    showTemplate("showContacts")
+                    showTemplate("listContacts")
                 }, 3000);
             } else if (fajax.readyState === 4) {
+                console.log(JSON.parse(fajax.responseText)[0])
                 showNotification('Email is already registered!', 'error');
             }
         }
@@ -129,31 +144,104 @@ function resetAccount() {
     }
 }
 
-function loadContactsList(loggedInUserData) {
-    showTemplate("showContacts");
-    const list = document.getElementById("contactList");
-
-    list.innerHTML = "";
-    const template = document.getElementById("showContacts").content;
-
-    list.innerHTML = `
-            <table id="contactsList">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                    </tr>
-                </thead>
-                <tbody id="table-body">
-                </tbody>
-            </table>`
+/**
+ * Load all contacts for the current user.
+ * URL: GET http://localhost:3000/contacts/{email}/all
+ * Data: { currentUser: loggedInEmail }
+ */
+function loadContactsList() {
+    const fajax = new FXMLHttpRequest();
+    fajax.open('GET', `/contacts/${UserEmail}/all`);
+    fajax.onload = () => {
+        if (fajax.readyState === 4 && fajax.status === 200) {
+        } else if (fajax.readyState === 4) {
+            console.log(xhr.responseText);
+            contacts.length = 0;
+            contacts.push(...JSON.parse(xhr.responseText));
+            renderList();
+            console.log(JSON.parse(fajax.responseText)[0])
+            showNotification('Email is already registered!', 'error');
+        }
+    }
+    let data = { currentUser: UserEmail }
+    console.log("Sending request with data: " + JSON.stringify(data));
+    fajax.send(data);
 }
 
+/**
+ * Add a new contact for the current user.
+ * URL: POST http://localhost:3000/contacts/{email}
+ * Data: { name, phone, email, loggedInEmail }
+ */
+function addContact() {
+    const name = document.getElementById("contactName").value.trim();
+    const phone = document.getElementById("contactPhone").value.trim();
+    const email = document.getElementById("contactEmail").value.trim();
 
+    if (name && phone && email) {
+        const fajax = new FXMLHttpRequest();
+        fajax.open('POST', `/contacts/${email}`);
+        fajax.onload = () => {
+            if (fajax.readyState === 4 && fajax.status === 201) {
+                let response = JSON.parse(fajax.responseText);
+                console.log(response);
+                UserEmail = response.email;
+                contacts.push({ name, phone, email, contactId });
+                document.getElementById("contactName").value = "";
+                document.getElementById("contactPhone").value = "";
+                document.getElementById("contactEmail").value = "";
+                showTemplate("listContacts");
 
+            } else if (fajax.readyState === 4) {
+                console.log(fajax)
+                alert(
+                    `Failed to add contact: \nerror code ${xhr.status} 
+                    \n${JSON.parse(xhr.responseText).message}`
+                );
+            }
+        };
+
+        let data = { name, phone, email, UserEmail }
+        console.log("Sending request with data: " + JSON.stringify(data));
+        fajax.send(data);
+    }
+}
+
+/**
+ * Search for contacts.
+ * URL: GET http://localhost:3000/contacts/{UserEmail}/search
+ * Data: { currentUser: UserEmail, search }
+ */
+function searchContact() {
+    const search = document.getElementById("searchInput").value.trim();
+    const fajax = new FXMLHttpRequest();
+
+    fajax.open('GET', `/contacts/${UserEmail}/search`);
+    fajax.onload = () => {
+        if (fajax.readyState === 4 && fajax.status === 200) {
+            let response = JSON.parse(fajax.responseText);
+            console.log(response);
+            contacts.push(...JSON.parse(fajax.responseText));
+            renderList();
+            showTemplate("listContacts");
+
+        } else if (fajax.readyState === 4) {
+            console.log(fajax)
+            alert(
+                `Failed to add contact: \nerror code ${xhr.status} 
+                \n${JSON.parse(xhr.responseText).message}`
+            );
+        }
+    };
+    
+    let data = { currentUser: UserEmail, search }
+    console.log("Sending request with data: " + JSON.stringify(data));
+    fajax.send(data);
+}  
 window.signUpForm = signUpForm;
 window.resetAccount = resetAccount;
 window.signInForm = signInForm;
 window.logout = logout;
 window.showNotification = showNotification;
+window.addContact = addContact;
+window.searchContact = searchContact;

@@ -76,7 +76,7 @@ const DataBase = {
 
     searchContacts(userEmail, search) {
         const searchRegex = new RegExp(search, "i");
-        const contactData = getContact(userEmail).filter(
+        const contactData = this.getContact(userEmail).filter(
             (c) => 
                 searchRegex.test(c.name) || 
                 searchRegex.test(c.email) || 

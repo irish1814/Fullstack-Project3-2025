@@ -14,12 +14,12 @@
         <nav class="hidden" id="nav-bar">
             <div class="search-bar">
                 <span class="material-symbols-outlined search-icon">search</span>
-                <input type="text" id="searchInput" placeholder="Search contacts...">
+                <input onclick="searchContact()" type="text" id="searchInput" placeholder="Search contacts...">
             </div>    
 
             <ul class="menu-content">
-                <li><button id="createBtn"><span class="material-symbols-outlined">person_add</span><span>Create Contact</span></button></li>
-                <li><button id="editBtn"><span class="material-symbols-outlined">edit</span><span>Edit Contact</span></button></li>
+                <li><button id="createBtn" onclick="showTemplate('createContact')"><span class="material-symbols-outlined">person_add</span><span>Create Contact</span></button></li>
+                <li><button id="editBtn" onclick="showTemplate('editContact')"><span class="material-symbols-outlined">edit</span><span>Edit Contact</span></button></li>
                 <li><button id="deleteBtn"><span class="material-symbols-outlined">delete</span><span>Delete Contact</span></button></li>
                 <li><button id="logoutBtn" onclick="logout()"><span class="material-symbols-outlined">logout</span><span>Log Out</span></button></li>
             </ul>
@@ -29,7 +29,7 @@
         <div id="content" class="container"></div>
 
         <div class="contact-list">
-            <template id="showContacts">
+            <template id="listContacts">
                 <table id="listContacts">
                     <thead>
                         <tr>
@@ -57,36 +57,7 @@
                     </div>
                 </div>
             </template>
-
-            <!-- Template for reading the contact list -->
-            <template id="read-template">
-                <div id="read" class="template-section">
-                <h1>Contact List</h1>
-                <header>
-                    <div class="search-bar">
-                    <input
-                        type="text"
-                        id="searchInput"
-                        placeholder="Search contact by name"
-                    />
-                    <button onclick="searchContact()">Search</button>
-                    </div>
-                    <div class="header-actions">
-                    <button
-                        class="add-contact-button"
-                        onclick="showTemplate('create')"
-                    ></button>
-                    </div>
-                </header>
-                <div class="contact-headers">
-                    <span class="header-tel">Tel</span>
-                    <span class="header-name">Name</span>
-                    <span class="header-email">Email</span>
-                </div>
-                <div id="contactList"></div>
-                </div>
-            </template>
-
+            
             <!-- Template for editing a contact -->
             <template id="editContact">
                 <div id="edit" class="editContact">
@@ -95,7 +66,7 @@
                     <input type="text" id="editContactPhone" placeholder="Enter new phone"/>
                     <input type="email" id="editContactEmail" placeholder="Enter new email"/>
                     <div class="actions">
-                        <button class="actions-butten" onclick="saveEditContact()">
+                        <button class="actions-butten" onclick="editContact()">
                             Save
                         </button>
                         <button class="actions-butten" onclick="showTemplate('listContacts')">
@@ -105,65 +76,6 @@
                 </div>
             </template>
         </div>
-
-        <!-- Create / Update Contact Modal -->
-        <div id="contactModal" class="modal">
-            <div class="modal-content">
-                <span class="close-btn">&times;</span>
-                <h2 id="modalTitle">Create Contact</h2>
-
-                <div class="contact-fields">
-                    <label for="contactName">Name:</label>
-                    <input type="text" id="contactName">
-
-                    <label for="contactEmail">Email:</label>
-                    <input type="email" id="contactEmail">
-
-                    <label for="contactPhone">Phone:</label>
-                    <input type="tel" id="contactPhone">
-
-                    <label for="contactCountry">Country:</label>
-                    <input type="text" id="contactCountry">
-
-                    <label for="contactCity">City:</label>
-                    <input type="text" id="contactCity">
-
-                    <label for="contactAddress">Address:</label>
-                    <input type="text" id="contactAddress">
-
-                    <label for="contactPhoto">Photo URL:</label>
-                    <input type="text" id="contactPhoto">
-
-                    <button id="saveContactBtn">Save</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Template for a contact row in the table -->
-        <template id="contact-row-template">
-            <tr class="contact-row">
-                <td class="contact-name"></td>
-                <td class="contact-email"></td>
-                <td class="contact-phone"></td>
-                <td><button class="delete-btn">❌</button></td>
-            </tr>
-        </template>
-
-        <!-- Pop-op Contact Window Template -->
-        <template id="contact-modal-template">
-            <div class="modal-content">
-                <span class="close-btn">&times;</span>
-                <h2 id="modalName"></h2>
-                <img id="modalPhoto" src="" alt="Contact Photo" class="modal-photo">
-                <div id="modalDetails">
-                    <p><strong>Email:</strong> <span id="modalEmail"></span></p>
-                    <p><strong>Phone:</strong> <span id="modalPhone"></span></p>
-                    <p><strong>Country:</strong> <span id="modalCountry"></span></p>
-                    <p><strong>City:</strong> <span id="modalCity"></span></p>
-                    <p><strong>Address:</strong> <span id="modalAddress"></span></p>
-                </div>
-            </div>
-        </template>
 
         <div class="hidden">
             <!-- Template for user signup -->
@@ -196,6 +108,7 @@
                     </label>
                     <button class="submit" type="submit" onclick="signUpForm()">Submit</button>
                 <p class="signin">Already have an account? <button class="submit" onclick="showTemplate('login-form')">Signin</button></p>
+                <div id="notification" class="notification"></div>
             </template>
 
             <!-- Template for user login -->
@@ -218,7 +131,7 @@
                 <button class="submit" id="submit" onclick="signInForm()">Log in</button>
                 <p class="signin">Forgot your password? <button class="submit" onclick="showTemplate('reset-form')">Click here</button></p>
                 <p class="signin">Don't have an account? <button class="submit" onclick="showTemplate('registration-form')">Sign up</button></p>
-                
+                <div id="notification" class="notification"></div>
             </template>
             
             <!-- Template for reset account's password -->
@@ -243,7 +156,6 @@
                 <p class="signin">Remember your password? <button class="submit" onclick="showTemplate('login-form')">Login</button></p>
                 <div id="notification" class="notification"></div>
             </template>
-            <div id="notification" class="notification"></div>
         </div>
 
         <div id="contact-modal-content" class="modal"></div>
