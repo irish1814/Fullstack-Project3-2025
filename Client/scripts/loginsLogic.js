@@ -179,6 +179,7 @@ function addContact() {
     const email = document.getElementById("contactEmail").value.trim();
 
     if (name && phone && email) {
+        const userId = crypto.randomUUID();
         const fajax = new FXMLHttpRequest();
         fajax.open('POST', `/contacts/${email}`);
         fajax.onload = () => {
@@ -186,7 +187,7 @@ function addContact() {
                 let response = JSON.parse(fajax.responseText);
                 console.log(response);
                 UserEmail = response.email;
-                contacts.push({ name, phone, email, UserEmail });
+                contacts.push({ userId, name, phone, email, UserEmail });
                 document.getElementById("contactName").value = "";
                 document.getElementById("contactPhone").value = "";
                 document.getElementById("contactEmail").value = "";
@@ -242,20 +243,20 @@ function searchContact() {
 /**
  * Save edited contact for the current user.
  * URL: PUT http://localhost:3000/contacts/{UserEmail}/{emailId}
- * Data: { name: newName, phone: newPhone, email: newEmail, UserEmail, userId: emailId }
+ * Data: { name: newName, phone: newPhone, email: newEmail, UserId: UserEmail, emailId: emailId }
  */
-function editContact(email) {
+function editContact(contactId) {
     const newName = document.getElementById("editContactName").value.trim();
     const newPhone = document.getElementById("editContactPhone").value.trim();
     const newEmail = document.getElementById("editContactEmail").value.trim();
 
     if (newName && newPhone && newEmail) {
         const fajax = new FXMLHttpRequest();
-        fajax.open('PUT', `/contacts/${UserEmail}/${email}`);
+        fajax.open('PUT', `/contacts/${UserEmail}/${contactId}`);
         fajax.onload = () => {
             if (fajax.readyState === 4 && fajax.status === 201) {
                 console.log("Contact updated successfully");
-                contacts[email] = {
+                contacts[contactId] = {
                     name: newName,
                     phone: newPhone,
                     email: newEmail,
@@ -273,7 +274,7 @@ function editContact(email) {
             }
         };
 
-        let data = { name: newName, phone: newPhone, email: newEmail, UserEmail , userId: email}
+        let data = { name: newName, phone: newPhone, email: newEmail, UserId: UserEmail , contactId: contactId}
         console.log("Sending request with data: " + JSON.stringify(data));
         fajax.send(data);
     }
@@ -281,16 +282,16 @@ function editContact(email) {
 
 /**
  * Delete a contact for the current user.
- * URL: DELETE http://localhost:3000/contacts/{UserEmail}/{emailIdToDelete}
- * Data: { userID, contactId: emailIdToDelete }
+ * URL: DELETE http://localhost:3000/contacts/{UserEmail}/{contactId}
+ * Data: { userID, contactId: contactId }
  */
-function deleteContact(email) {
+function deleteContact(contactId) {
     const fajax = new FXMLHttpRequest();
-    fajax.open('DELETE', `/contacts/${UserEmail}/${email}`);
+    fajax.open('DELETE', `/contacts/${UserEmail}/${contactId}`);
     fajax.onload = () => {
         if (fajax.readyState === 4 && fajax.status === 200) {
             console.log("Contact deleted successfully");
-            contacts.splice(email, 1);
+            contacts.splice(contactId, 1);
             renderList();
         } else if (fajax.readyState === 4 && fajax.status === 404) {
             loadContactsList();
@@ -301,7 +302,7 @@ function deleteContact(email) {
         }
     };
 
-    let data = { UserEmail , contactId: email}
+    let data = { UserId: UserEmail , contactId: contactId}
     console.log("Sending request with data: " + JSON.stringify(data));
     fajax.send(data);
 }
