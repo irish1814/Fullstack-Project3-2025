@@ -50,14 +50,14 @@
             
             <!-- Template for creating a new contact -->
             <template id="createContact">
-                <div id="create" class="createContact">
+                <div id="create" class="editContact">
                     <h2>Add Contact</h2>
                     <input type="text" id="contactName" placeholder="Enter contact name"/>
                     <input type="text" id="contactPhone" placeholder="Enter contact phone"/>
                     <input type="email" id="contactEmail" placeholder="Enter contact email"/>
                     <div class="button-container">
-                        <button onclick="addContact()">Add</button>
-                        <button onclick="showTemplate('listContacts')">Abort</button>
+                        <button class="button-container" onclick="addContact()">Add</button>
+                        <button class="button-container" onclick="showTemplate('listContacts')">Cancel</button>
                     </div>
                 </div>
             </template>
@@ -70,12 +70,8 @@
                     <input type="text" id="editContactPhone" placeholder="Enter new phone"/>
                     <input type="email" id="editContactEmail" placeholder="Enter new email"/>
                     <div class="button-container">
-                        <button class="button-container" onclick="editContact()">
-                            Save
-                        </button>
-                        <button class="button-container" onclick="showTemplate('listContacts')">
-                            Cancel
-                        </button>
+                        <button class="button-container" onclick="editContact()">Save</button>
+                        <button class="button-container" onclick="showTemplate('listContacts')">Cancel</button>
                     </div>
                 </div>
             </template>

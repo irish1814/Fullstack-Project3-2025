@@ -195,8 +195,8 @@ function addContact() {
             } else if (fajax.readyState === 4) {
                 console.log(fajax)
                 alert(
-                    `Failed to add contact: \nerror code ${xhr.status} 
-                    \n${JSON.parse(xhr.responseText).message}`
+                    `Failed to add contact: \nerror code ${fajax.status} 
+                    \n${JSON.parse(fajax.responseText).message}`
                 );
             }
         };
@@ -244,18 +244,18 @@ function searchContact() {
  * URL: PUT http://localhost:3000/contacts/{userID}/{contactId}
  * Data: { name: newName, phone: newPhone, email: newEmail, UserEmail, contactId }
  */
-function editContact(index) {
+function editContact(email) {
     const newName = document.getElementById("editContactName").value.trim();
     const newPhone = document.getElementById("editContactPhone").value.trim();
     const newEmail = document.getElementById("editContactEmail").value.trim();
 
     if (newName && newPhone && newEmail) {
         const fajax = new FXMLHttpRequest();
-        fajax.open('PUT', `/contacts/${UserEmail}/${index}`);
+        fajax.open('PUT', `/contacts/${UserEmail}/${email}`);
         fajax.onload = () => {
             if (fajax.readyState === 4 && fajax.status === 201) {
                 console.log("Contact updated successfully");
-                contacts[index] = {
+                contacts[email] = {
                     name: newName,
                     phone: newPhone,
                     email: newEmail,
@@ -273,7 +273,7 @@ function editContact(index) {
             }
         };
 
-        let data = { name: newName, phone: newPhone, email: newEmail, UserEmail , index}
+        let data = { name: newName, phone: newPhone, email: newEmail, UserEmail , email}
         console.log("Sending request with data: " + JSON.stringify(data));
         fajax.send(data);
     }
@@ -282,15 +282,15 @@ function editContact(index) {
 /**
  * Delete a contact for the current user.
  * URL: DELETE http://localhost:3000/contacts/{userID}/{contactIdToDelete}
- * Data: { userID, contactId: contactIdToDelete }
+ * Data: { userID, contactId: emailIdToDelete }
  */
-function deleteContact(index) {
+function deleteContact(email) {
     const fajax = new FXMLHttpRequest();
-    fajax.open('DELETE', `/contacts/${UserEmail}/${index}`);
+    fajax.open('DELETE', `/contacts/${UserEmail}/${email}`);
     fajax.onload = () => {
         if (fajax.readyState === 4 && fajax.status === 200) {
             console.log("Contact deleted successfully");
-            contacts.splice(index, 1);
+            contacts.splice(email, 1);
             renderList();
         } else if (fajax.readyState === 4 && fajax.status === 404) {
             loadContactsList();
@@ -301,7 +301,7 @@ function deleteContact(index) {
         }
     };
 
-    let data = { UserEmail , contactId: index}
+    let data = { UserEmail , contactId: email}
     console.log("Sending request with data: " + JSON.stringify(data));
     fajax.send(data);
 }

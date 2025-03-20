@@ -256,13 +256,13 @@ function renderList() {
         editButton.textContent = "Edit";
         editButton.addEventListener("click", () => {
             showTemplate("editContact");
-            editContact(index);
+            editContact(contact.email);
         });
 
         deleteButton.textContent = "Delete";
-        deleteButton.addEventListener("click", () => deleteContact(index));
-        editButton.setAttribute("data-index", index);
-        deleteButton.setAttribute("data-index", index);
+        deleteButton.addEventListener("click", () => deleteContact(contact.email));
+        editButton.setAttribute("data-email", contact.email);
+        deleteButton.setAttribute("data-email", contact.email);
 
         actionCell.appendChild(editButton);
         actionCell.appendChild(deleteButton);
