@@ -2,7 +2,7 @@ import FXMLHttpRequest from "../../js/FAJAX.js";
 import { contacts, contactId } from "./displayContacts.js";
 
 var loginServer = 'http://localhost:5500'
-var UserEmail = null
+let UserEmail = null
 
 
 // Set a cookie
@@ -161,17 +161,13 @@ function loadContactsList() {
             let response = JSON.parse(fajax.responseText);
             console.log(response);
             contacts.length = 0;
-            contacts.push(...JSON.parse(fajax.responseText));
+            contacts.push(...response);
             renderList();
             showTemplate("listContacts");
         } else if (fajax.readyState === 4) {
             contacts.length = 0;
             contacts.push(...JSON.parse(fajax.responseText));
             renderList();
-        } else if (fajax.readyState === 4) {
-            alert(
-                `Failed to load contacts: \nerror code ${xhr.status} \n
-                ${JSON.parse(xhr.responseText).message}`);
         }
     }
     let data = { currentUser: UserEmail }
@@ -191,13 +187,11 @@ function addContact() {
 
     if (name && phone && email) {
         const fajax = new FXMLHttpRequest();
-        fajax.open('POST', `/contacts/${email}`);
+        fajax.open('POST', `/contacts/${UserEmail}`);
         fajax.onload = () => {
             if (fajax.readyState === 4 && fajax.status === 201) {
                 let response = JSON.parse(fajax.responseText);
                 console.log(response);
-                UserEmail = response.email;
-                contacts.push({ name, phone, email, UserEmail });
                 contacts.push({ name, phone, email, UserEmail });
                 document.getElementById("contactName").value = "";
                 document.getElementById("contactPhone").value = "";
