@@ -106,7 +106,7 @@ function signUpForm() {
             if (fajax.readyState === 4 && fajax.status === 201) {
                 showNotification('Registration successful! You can now log in.', 'success');
                 loadContactsList();
-
+                UserEmail = response.email;
                 // Redirect to the login page
                 setTimeout(() => {
                     showTemplate("listContacts")
