@@ -231,9 +231,10 @@ function showTemplate(templateType) {
 }
 
 function renderList() {
-    const tableBody = document.getElementById("table-body");
+    const tableBody = document.getElementById("tableBody");
 
     tableBody.innerHTML = "";
+    console.log("Contacts:", contacts);
     
     contacts.forEach((contact) => {
         const row = document.createElement("tr");
@@ -253,11 +254,11 @@ function renderList() {
         editButton.textContent = "Edit";
         editButton.addEventListener("click", () => {
             showTemplate("editContact");
-            editContact(contact.userId);
+            editContact(contact.email);
         });
 
         deleteButton.textContent = "Delete";
-        deleteButton.addEventListener("click", () => deleteContact(contact.userId));
+        deleteButton.addEventListener("click", () => deleteContact(contact.email));
 
         actionCell.appendChild(editButton);
         actionCell.appendChild(deleteButton);
