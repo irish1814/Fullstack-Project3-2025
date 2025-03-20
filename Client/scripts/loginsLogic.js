@@ -252,7 +252,6 @@ function searchContact() {
 function editContact(emailId) {
     const newName = document.getElementById("editContactName").value.trim();
     const newPhone = document.getElementById("editContactPhone").value.trim();
-    const newEmail = document.getElementById("editContactEmail").value.trim();
 
     if (newName && newPhone && newEmail) {
         const fajax = new FXMLHttpRequest();
@@ -263,7 +262,7 @@ function editContact(emailId) {
                 contacts[emailId] = {
                     name: newName,
                     phone: newPhone,
-                    email: newEmail,
+                    email: emailId,
                     UserEmail: UserEmail,
                 };
                 showTemplate("listContacts");
@@ -278,7 +277,7 @@ function editContact(emailId) {
             }
         };
 
-        let data = { name: newName, phone: newPhone, email: newEmail, UserId: UserEmail , contactId: emailId}
+        let data = { name: newName, phone: newPhone, email: newEmail, UserId: UserEmail, contactId: emailId }
         console.log("Sending 'edit contact' request with data: " + JSON.stringify(data));
         fajax.send(data);
     }
