@@ -241,8 +241,8 @@ function searchContact() {
 
 /**
  * Save edited contact for the current user.
- * URL: PUT http://localhost:3000/contacts/{userID}/{contactId}
- * Data: { name: newName, phone: newPhone, email: newEmail, UserEmail, contactId }
+ * URL: PUT http://localhost:3000/contacts/{UserEmail}/{emailId}
+ * Data: { name: newName, phone: newPhone, email: newEmail, UserEmail, userId: emailId }
  */
 function editContact(email) {
     const newName = document.getElementById("editContactName").value.trim();
@@ -273,7 +273,7 @@ function editContact(email) {
             }
         };
 
-        let data = { name: newName, phone: newPhone, email: newEmail, UserEmail , email}
+        let data = { name: newName, phone: newPhone, email: newEmail, UserEmail , userId: email}
         console.log("Sending request with data: " + JSON.stringify(data));
         fajax.send(data);
     }
@@ -281,7 +281,7 @@ function editContact(email) {
 
 /**
  * Delete a contact for the current user.
- * URL: DELETE http://localhost:3000/contacts/{userID}/{contactIdToDelete}
+ * URL: DELETE http://localhost:3000/contacts/{UserEmail}/{emailIdToDelete}
  * Data: { userID, contactId: emailIdToDelete }
  */
 function deleteContact(email) {
