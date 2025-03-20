@@ -253,11 +253,17 @@ function renderList() {
         editButton.textContent = "Edit";
         editButton.addEventListener("click", () => {
             showTemplate("editContact");
-            editContact(contact.userId);
+            const name = document.getElementById("editContactName");
+            const phone = document.getElementById("editContactPhone");
+            const email = document.getElementById("editContactEmail");
+            name.value = contact.name;
+            phone.value = contact.phone;
+            email.value = contact.email;
+            email.setAttribute('readonly', true);
         });
 
         deleteButton.textContent = "Delete";
-        deleteButton.addEventListener("click", () => deleteContact(contact.userId));
+        deleteButton.addEventListener("click", () => deleteContact(contact.email));
 
         actionCell.appendChild(editButton);
         actionCell.appendChild(deleteButton);
