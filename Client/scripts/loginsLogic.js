@@ -65,18 +65,20 @@ function signInForm() {
                 let username = response.name;
                 UserEmail = response.email;
                 showNotification(`Welcome Back ${username}`, 'success');
-                // Redirect to the login page
+                loadContactsList();
+
+                // Redirect to the main page
                 setTimeout(() => {
                     showTemplate("listContacts");
-                    loadContactsList();
-                }, 3000);
+                }, 2000);
+
             } else if (fajax.readyState === 4) {
                 console.log(fajax)
                 showNotification('Wrong Email or Password', 'error');
             }
         }
         let data = { email: email, password: password }
-        console.log("Sending request with data: " + JSON.stringify(data));
+        console.log("Sending 'signin' request with data: " + JSON.stringify(data));
         fajax.send(data);
     }
 }
@@ -103,17 +105,19 @@ function signUpForm() {
         fajax.onload = () => {
             if (fajax.readyState === 4 && fajax.status === 201) {
                 showNotification('Registration successful! You can now log in.', 'success');
+                loadContactsList();
+
                 // Redirect to the login page
                 setTimeout(() => {
                     showTemplate("listContacts")
-                }, 3000);
+                }, 2000);
             } else if (fajax.readyState === 4) {
                 console.log(JSON.parse(fajax.responseText)[0])
                 showNotification('Email is already registered!', 'error');
             }
         }
         let data = { email: email, password: password, name: firstname + ' ' + lastname }
-        console.log("Sending request with data: " + JSON.stringify(data));
+        console.log("Sending 'signup' request with data: " + JSON.stringify(data));
         fajax.send(data);
     }
 }
@@ -162,14 +166,16 @@ function loadContactsList() {
             showTemplate("listContacts");
         } else if (fajax.readyState === 4) {
             contacts.length = 0;
-            contacts.push(...JSON.parse(xhr.responseText));
+            contacts.push(...JSON.parse(fajax.responseText));
             renderList();
-            console.log(JSON.parse(fajax.responseText)[0])
-            showNotification('Email is already registered!', 'error');
+        } else if (fajax.readyState === 4) {
+            alert(
+                `Failed to load contacts: \nerror code ${xhr.status} \n
+                ${JSON.parse(xhr.responseText).message}`);
         }
     }
     let data = { currentUser: UserEmail }
-    console.log("Sending request with data: " + JSON.stringify(data));
+    console.log("Sending 'load contacts' request with data: " + JSON.stringify(data));
     fajax.send(data);
 }
 
@@ -192,6 +198,7 @@ function addContact() {
                 console.log(response);
                 UserEmail = response.email;
                 contacts.push({ name, phone, email, UserEmail });
+                contacts.push({ name, phone, email, UserEmail });
                 document.getElementById("contactName").value = "";
                 document.getElementById("contactPhone").value = "";
                 document.getElementById("contactEmail").value = "";
@@ -207,7 +214,7 @@ function addContact() {
         };
 
         let data = { name, phone, email, UserEmail }
-        console.log("Sending request with data: " + JSON.stringify(data));
+        console.log("Sending 'add contact' request with data: " + JSON.stringify(data));
         fajax.send(data);
     }
 }
@@ -247,7 +254,7 @@ function searchContact() {
 /**
  * Save edited contact for the current user.
  * URL: PUT http://localhost:3000/contacts/{UserEmail}/{emailId}
- * Data: { name: newName, phone: newPhone, email: newEmail, UserId: UserEmail, emailId: emailId }
+ * Data: { name: newName, phone: newPhone, email: newEmail, UserId: UserEmail, contactId: emailId }
  */
 function editContact() {
     const newName = document.getElementById("editContactName").value.trim();
@@ -288,15 +295,15 @@ function editContact() {
 /**
  * Delete a contact for the current user.
  * URL: DELETE http://localhost:3000/contacts/{UserEmail}/{contactId}
- * Data: { userID, contactId: contactId }
+ * Data: { userID, contactId: emailId }
  */
-function deleteContact(contactId) {
+function deleteContact(emailId) {
     const fajax = new FXMLHttpRequest();
-    fajax.open('DELETE', `/contacts/${UserEmail}/${contactId}`);
+    fajax.open('DELETE', `/contacts/${UserEmail}/${emailId}`);
     fajax.onload = () => {
         if (fajax.readyState === 4 && fajax.status === 204) {
             console.log("Contact deleted successfully");
-            contacts.splice(contactId, 1);
+            contacts.splice(emailId, 1);
             renderList();
         } else if (fajax.readyState === 4 && fajax.status === 404) {
             loadContactsList();
@@ -307,8 +314,8 @@ function deleteContact(contactId) {
         }
     };
 
-    let data = { UserId: UserEmail , contactId: contactId}
-    console.log("Sending request with data: " + JSON.stringify(data));
+    let data = { UserId: UserEmail , contactId: emailId}
+    console.log("Sending 'delete contact' request with data: " + JSON.stringify(data));
     fajax.send(data);
 }
 

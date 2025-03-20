@@ -231,9 +231,10 @@ function showTemplate(templateType) {
 }
 
 function renderList() {
-    const tableBody = document.getElementById("table-body");
+    const tableBody = document.getElementById("tableBody");
 
     tableBody.innerHTML = "";
+    console.log("Contacts:", contacts);
     
     contacts.forEach((contact) => {
         const row = document.createElement("tr");
@@ -263,6 +264,7 @@ function renderList() {
         });
 
         deleteButton.textContent = "Delete";
+        deleteButton.addEventListener("click", () => deleteContact(contact.email));
         deleteButton.addEventListener("click", () => deleteContact(contact.email));
 
         actionCell.appendChild(editButton);
