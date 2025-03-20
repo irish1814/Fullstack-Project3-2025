@@ -235,16 +235,13 @@ function renderList() {
 
     tableBody.innerHTML = "";
     
-    // Loop over the contacts array and insert rows into the table body.
-    contacts.forEach((contact, index) => {
+    contacts.forEach((contact) => {
         const row = document.createElement("tr");
 
-        // Create table cells for Name, Email, and Phone
         const nameCell = document.createElement("td");
         const emailCell = document.createElement("td");
         const phoneCell = document.createElement("td");
 
-        // Fill the cells with contact information
         nameCell.textContent = contact.name;
         emailCell.textContent = contact.email;
         phoneCell.textContent = contact.phone;
@@ -256,13 +253,11 @@ function renderList() {
         editButton.textContent = "Edit";
         editButton.addEventListener("click", () => {
             showTemplate("editContact");
-            editContact(contact.email);
+            editContact(contact.userId);
         });
 
         deleteButton.textContent = "Delete";
-        deleteButton.addEventListener("click", () => deleteContact(contact.email));
-        editButton.setAttribute("data-email", contact.email);
-        deleteButton.setAttribute("data-email", contact.email);
+        deleteButton.addEventListener("click", () => deleteContact(contact.userId));
 
         actionCell.appendChild(editButton);
         actionCell.appendChild(deleteButton);
@@ -275,17 +270,15 @@ function renderList() {
         tableBody.appendChild(row);
     });
 
-    // If there are no contacts, display a message
     if (contacts.length === 0) {
         const emptyRow = document.createElement("tr");
         const emptyCell = document.createElement("td");
-        emptyCell.colSpan = 4; // Set colspan to span across all columns
+        emptyCell.colSpan = 4;
         emptyCell.textContent = "No contacts found";
         emptyRow.appendChild(emptyCell);
         tableBody.appendChild(emptyRow);
     }
 }
-
 
 window.showTemplate = showTemplate;
 window.renderList = renderList;
