@@ -253,7 +253,7 @@ function editContact(email) {
         const fajax = new FXMLHttpRequest();
         fajax.open('PUT', `/contacts/${UserEmail}/${email}`);
         fajax.onload = () => {
-            if (fajax.readyState === 4 && fajax.status === 201) {
+            if (fajax.readyState === 4 && fajax.status === 200) {
                 console.log("Contact updated successfully");
                 contacts[email] = {
                     name: newName,
@@ -288,7 +288,7 @@ function deleteContact(email) {
     const fajax = new FXMLHttpRequest();
     fajax.open('DELETE', `/contacts/${UserEmail}/${email}`);
     fajax.onload = () => {
-        if (fajax.readyState === 4 && fajax.status === 200) {
+        if (fajax.readyState === 4 && fajax.status === 204) {
             console.log("Contact deleted successfully");
             contacts.splice(email, 1);
             renderList();
