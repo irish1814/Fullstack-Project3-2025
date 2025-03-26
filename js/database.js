@@ -45,6 +45,9 @@ const DataBase = {
         if (!contactData[userEmail]) {
             contactData[userEmail] = [];
         }
+
+        if (contactData[userEmail].find(contact => contact.email === data.email)) 
+            return null;
         contactData[userEmail].push(data);
         this.saveData("contacts", contactData);
         return data;    
