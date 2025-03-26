@@ -1,3 +1,5 @@
+import { getCookie } from "./cookiesHandleing.js";
+import { UserEmail } from "./loginsOperation.js";
 export var contacts = [];
 // export var editIndex = null;
 export var contactId = null;
@@ -208,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Show the relevant template based on user action
-function showTemplate(templateType) {
+export function showTemplate(templateType) {
     const content = document.getElementById("content");
     content.innerHTML = "";
     const template = document.getElementById(templateType).content;
@@ -216,7 +218,7 @@ function showTemplate(templateType) {
     content.appendChild(clone);
     
     // Hide nav bar when in signin or signup mode and set the class to be "form" which is the dedicated class for all sign forms
-    if (templateType === "login-form" || templateType === "registration-form" || templateType === "reset-form") {
+    if (!getCookie(UserEmail) || templateType === "login-form" || templateType === "registration-form" || templateType === "reset-form") {
         document.getElementById("nav-bar").className = "hidden";
         content.className = "form";
     } else {

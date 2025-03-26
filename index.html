@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
         <link rel="stylesheet" href="./Client/css/loginsTemplates.css">
         <link rel="stylesheet" href="./Client/css/mainPage.css">
-        <link rel="stylesheet" href="./Client/css/pop-opWindow.css">
+        <link rel="stylesheet" href="./Client/css/card.css">
         <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/128/9722/9722917.png"/>
     </head>
     <body>
@@ -24,11 +24,8 @@
                 <li><button id="logoutBtn" onclick="logout()"><span class="material-symbols-outlined">logout</span><span>Log Out</span></button></li>
             </ul>
         </nav>
-            <div class="container">
-                <!-- Main content area -->
-                <div id="content"></div>
-
-            <!-- Content area -->
+        <div class="container">
+            <!-- Main content area -->
             <div id="content"></div>
 
             <template id="listContacts">
@@ -48,85 +45,72 @@
             
             <!-- Template for creating a new contact -->
             <template id="createContact">
-                <div id="create" class="editContact">
-                    <h2>Add Contact</h2>
-                    <input type="text" id="contactName" placeholder="Enter contact name"/>
-                    <input type="text" id="contactPhone" placeholder="Enter contact phone"/>
-                    <input type="email" id="contactEmail" placeholder="Enter contact email"/>
-                    <div class="button-container">
-                        <button class="button-container" onclick="addContact()">Add</button>
-                        <button class="button-container" onclick="showTemplate('listContacts')">Cancel</button>
+                <div class="card">
+                    <div class="card-border-top">
                     </div>
+                    <div class="img"></div>
+                    <span>Create New Contact</span>
+                    <div class="card-inputs">
+                        <input required="" class="card-input" type="email" name="email" id="contactEmail" placeholder="E-mail">
+                        <input required="" class="card-input" type="phone" name="phone" id="contactPhone" placeholder="Phone Number">
+                        <input required="" class="card-input" type="text" name="firstname" id="contactFirstName" placeholder="First Name">
+                        <input required="" class="card-input" type="text" name="lastname" id="contactLastName" placeholder="Last Name">
+                    </div>
+                    <button onclick="addContact()">Save</button>
+                    <button onclick="showTemplate('listContacts')">Cancel</button>
                 </div>
             </template>
 
             <!-- Template for editing a contact -->
             <template id="editContact">
-                <div id="edit" class="editContact">
-                    <h2>Edit Contact</h2>
-                    <input type="text" id="editContactName" placeholder="Enter new name"/>
-                    <input type="text" id="editContactPhone" placeholder="Enter new phone"/>
-                    <div class="button-container">
-                        <button class="button-container" onclick="editContact()">Save</button>
-                        <button class="button-container" onclick="showTemplate('listContacts')">Cancel</button>
+                <div class="card">
+                    <div class="card-border-top">
                     </div>
+                    <div class="img"></div>
+                    <span>Edit Contact Info</span>
+                    <div class="card-inputs">
+                        <input required="" class="card-input" type="phone" name="phone" id="editContactPhone" placeholder="New Phone Number">
+                        <input required="" class="card-input" type="text" name="firstname" id="editContactFirstName" placeholder="New First Name">
+                        <input required="" class="card-input" type="text" name="lastname" id="editContactLastName" placeholder="New Last Name">
+                    </div>
+                    <button onclick="editContact()">Save</button>
+                    <button onclick="showTemplate('listContacts')">Cancel</button>
                 </div>
             </template>
 
             <!-- Template for user signup -->
             <template id="registration-form">
-                <p class="title">Register</p>
-                <p class="message">Signup now and create your own contacts list</p>
-                <div class="flex">
-                    <label>
-                        <input class="input" type="text" id="firstname" placeholder="" required>
-                        <span>Firstname</span>
-                    </label>
-
-                    <label>
-                        <input class="input" type="text" id="lastname" placeholder="" required>
-                        <span>Lastname</span>
-                    </label>
-                        
-                    <label>
-                        <input class="input" type="email" id="email" placeholder="" required>
-                        <span>Email</span>
-                    </label> 
-                        
-                    <label>
-                        <input class="input" type="password" id="password" placeholder="" required>
-                        <span>Password</span>
-                    </label>
-                    <label>
-                        <input class="input" type="password" id="confirm-password" placeholder="" minlength="8" required>
-                        <span>Confirm password</span>
-                    </label>
-                    <button class="submit" type="submit" onclick="signUpForm()">Submit</button>
-                <p class="signin">Already have an account? <button class="submit" onclick="showTemplate('login-form')">Signin</button></p>
-                <div id="notification" class="notification"></div>
+                <div class="sign-container">
+                    <div class="heading">Sign Up</div>
+                        <form id="registration-form" class="sign-form">
+                            <input required="" class="input" type="email" name="email" id="email" placeholder="E-mail">
+                            <input required="" class="input" type="phone" name="phone" id="phone" placeholder="Phone Number">
+                            <input required="" class="input" type="text" name="firstname" id="firstname" placeholder="First Name">
+                            <input required="" class="input" type="text" name="lastname" id="lastname" placeholder="Last Name">
+                            <input required="" class="input" type="password" name="password" id="password" placeholder="Password">
+                            <input required="" class="input" type="password" name="confpassword" id="confirm-password" placeholder="Confirm Password">
+                            <button id="signup-button" class="sign-button" type="submit" onclick="signUpForm()">Sign Up</button>
+                            <p class="submit-button">Already have an account? <button class="sign-button" onclick="showTemplate('login-form')">Sign In</button></p>
+                        </form>
+                    <span class="agreement"><a href="#">Learn user licence agreement</a></span>
+                    <div id="notification" class="notification"></div>
+                </div>
             </template>
 
             <!-- Template for user login -->
             <template id="login-form">
-                <p class="title">Log in</p>
-                <p class="message">Welcome back! Please enter your credentials.</p>
-
-                <div class="flex">
-                    <label>
-                        <input class="input" id="email" type="email" placeholder="" required="">
-                        <span>Email</span>
-                    </label>
-
-                    <label>
-                        <input class="input" id="password" type="password" placeholder="" required="">
-                        <span>Password</span>
-                    </label>
+                <div class="sign-container">
+                    <div class="heading">Sign In</div>
+                    <form id="login-form" class="sign-form">
+                        <input required="" class="input" type="email" name="email" id="email" placeholder="E-mail">
+                        <input required="" class="input" type="password" name="password" id="password" placeholder="Password">
+                        <a onclick="showTemplate('reset-form')">Reset Password</a>
+                        <!-- <span class="forgot-password"><a href="#">Forgot Password ?</a></span> -->
+                        <button id="login-button" class="sign-button" type="button" onclick="signInForm()">Sign In</button>
+                        <p class="submit-button">Already have an account? <button class="sign-button" onclick="showTemplate('registration-form')">Sign Up</button></p>
+                    </form>
+                    <div id="notification" class="notification"></div>
                 </div>
-
-                <button class="submit" id="submit" onclick="signInForm()">Log in</button>
-                <p class="signin">Forgot your password? <button class="submit" onclick="showTemplate('reset-form')">Click here</button></p>
-                <p class="signin">Don't have an account? <button class="submit" onclick="showTemplate('registration-form')">Sign up</button></p>
-                <div id="notification" class="notification"></div>
             </template>
             
             <!-- Template for reset account's password -->
@@ -152,9 +136,9 @@
                 <div id="notification" class="notification"></div>
             </template>
 
-            <div id="contact-modal-content" class="modal"></div>
         </div>
         <script src="./Client/scripts/displayContacts.js" type="module"></script>
-        <script src="./Client/scripts/loginsLogic.js" type="module"></script>
+        <script src="./Client/scripts/loginsOperation.js" type="module"></script>
+        <script src="./Client/scripts/CRUD-Operation.js" type="module"></script>
     </body>
 </html>
