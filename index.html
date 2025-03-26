@@ -13,15 +13,13 @@
     <body>
         <nav class="hidden" id="nav-bar">
             <div class="search-bar">
-                <span class="material-symbols-outlined search-icon">search</span>
-                <input onclick="searchContact()" type="text" id="searchInput" placeholder="Search contacts...">
+                <input onclick="searchContact()" type="search" id="searchInput" placeholder="Search contacts...">
             </div>    
 
             <ul class="menu-content">
-                <li><button id="createBtn" onclick="showTemplate('createContact')"><span class="material-symbols-outlined">person_add</span><span>Create Contact</span></button></li>
-                <!-- <li><button id="editBtn" onclick="showTemplate('editContact')"><span class="material-symbols-outlined">edit</span><span>Edit Contact</span></button></li>
-                <li><button id="deleteBtn"><span class="material-symbols-outlined">delete</span><span>Delete Contact</span></button></li> -->
-                <li><button id="logoutBtn" onclick="logout()"><span class="material-symbols-outlined">logout</span><span>Log Out</span></button></li>
+                <li><a id="createBtn" onclick="showTemplate('createContact')"><span class="material-symbols-outlined">person_add</span><span>Create Contact</span></a></li>
+                <li><a id="logoutBtn" onclick="logout()"><span class="material-symbols-outlined">logout</span><span>Logout</span></a></li>
+                <!-- <li><button id="logoutBtn" onclick="logout()"><span class="material-symbols-outlined">logout</span><span>Log Out</span></button></li> -->
             </ul>
         </nav>
         <div class="container">
@@ -104,7 +102,6 @@
                     <form id="login-form" class="sign-form">
                         <input required="" class="input" type="email" name="email" id="email" placeholder="E-mail">
                         <input required="" class="input" type="password" name="password" id="password" placeholder="Password">
-                        <a onclick="showTemplate('reset-form')">Reset Password</a>
                         <!-- <span class="forgot-password"><a href="#">Forgot Password ?</a></span> -->
                         <button id="login-button" class="sign-button" type="button" onclick="signInForm()">Sign In</button>
                         <p class="submit-button">Already have an account? <button class="sign-button" onclick="showTemplate('registration-form')">Sign Up</button></p>
